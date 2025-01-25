@@ -1,0 +1,2097 @@
+---
+source: smithy-parser/src/lib.rs
+expression: ast
+input_file: smithy-parser/fixtures/defaults.smithy
+---
+Ast {
+    control: [
+        (
+            "version",
+            String(
+                "2.0",
+            ),
+        ),
+    ],
+    metadata: [],
+    shapes: Some(
+        ShapeSection {
+            namespace: "smithy.protocoltests.rpcv2Cbor",
+            uses: [
+                "smithy.protocols#rpcv2Cbor",
+                "smithy.test#httpRequestTests",
+                "smithy.test#httpResponseTests",
+                "smithy.framework#ValidationException",
+            ],
+            shapes: [
+                Apply(
+                    ApplyStatement {
+                        shape_id: "OperationWithDefaults",
+                        traits: [
+                            Trait {
+                                shape_id: "httpRequestTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborClientPopulatesDefaultValuesInInput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Client populates default values in input.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/OperationWithDefaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2hkZWZhdWx0c79tZGVmYXVsdFN0cmluZ2JoaW5kZWZhdWx0Qm9vbGVhbvVrZGVmYXVsdExpc3Sf/3BkZWZhdWx0VGltZXN0YW1wwQBrZGVmYXVsdEJsb2JDYWJja2RlZmF1bHRCeXRlAWxkZWZhdWx0U2hvcnQBbmRlZmF1bHRJbnRlZ2VyCmtkZWZhdWx0TG9uZxhkbGRlZmF1bHRGbG9hdPo/gAAAbWRlZmF1bHREb3VibGX6P4AAAGpkZWZhdWx0TWFwv/9rZGVmYXVsdEVudW1jRk9PbmRlZmF1bHRJbnRFbnVtAWtlbXB0eVN0cmluZ2BsZmFsc2VCb29sZWFu9GllbXB0eUJsb2JAaHplcm9CeXRlAGl6ZXJvU2hvcnQAa3plcm9JbnRlZ2VyAGh6ZXJvTG9uZwBpemVyb0Zsb2F0+gAAAABqemVyb0RvdWJsZfoAAAAA//8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaults",
+                                                                        value: Object(
+                                                                            [],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborClientSkipsTopLevelDefaultValuesInInput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Client skips top level default values in input.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/OperationWithDefaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborClientUsesExplicitlyProvidedMemberValuesOverDefaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Client uses explicitly provided member values over defaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/OperationWithDefaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2hkZWZhdWx0c7dtZGVmYXVsdFN0cmluZ2NieWVuZGVmYXVsdEJvb2xlYW71a2RlZmF1bHRMaXN0gWFhcGRlZmF1bHRUaW1lc3RhbXDB+z/wAAAAAAAAa2RlZmF1bHRCbG9iQmhpa2RlZmF1bHRCeXRlAmxkZWZhdWx0U2hvcnQCbmRlZmF1bHRJbnRlZ2VyFGtkZWZhdWx0TG9uZxjIbGRlZmF1bHRGbG9hdPpAAAAAbWRlZmF1bHREb3VibGX7QAAAAAAAAABqZGVmYXVsdE1hcKFkbmFtZWRKYWNra2RlZmF1bHRFbnVtY0JBUm5kZWZhdWx0SW50RW51bQJrZW1wdHlTdHJpbmdjZm9vbGZhbHNlQm9vbGVhbvVpZW1wdHlCbG9iQmhpaHplcm9CeXRlAWl6ZXJvU2hvcnQBa3plcm9JbnRlZ2VyAWh6ZXJvTG9uZwFpemVyb0Zsb2F0+j+AAABqemVyb0RvdWJsZfs/8AAAAAAAAP8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaults",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultString",
+                                                                                    value: String(
+                                                                                        "bye",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultBoolean",
+                                                                                    value: Keyword(
+                                                                                        True,
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultList",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultTimestamp",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultBlob",
+                                                                                    value: String(
+                                                                                        "hi",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultByte",
+                                                                                    value: Number(
+                                                                                        "2",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultShort",
+                                                                                    value: Number(
+                                                                                        "2",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultInteger",
+                                                                                    value: Number(
+                                                                                        "20",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultLong",
+                                                                                    value: Number(
+                                                                                        "200",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultFloat",
+                                                                                    value: Number(
+                                                                                        "2.0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultDouble",
+                                                                                    value: Number(
+                                                                                        "2.0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultMap",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "name",
+                                                                                                value: String(
+                                                                                                    "Jack",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultEnum",
+                                                                                    value: String(
+                                                                                        "BAR",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultIntEnum",
+                                                                                    value: Number(
+                                                                                        "2",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "emptyString",
+                                                                                    value: String(
+                                                                                        "foo",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "falseBoolean",
+                                                                                    value: Keyword(
+                                                                                        True,
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "emptyBlob",
+                                                                                    value: String(
+                                                                                        "hi",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroByte",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroShort",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroInteger",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroLong",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroFloat",
+                                                                                    value: Number(
+                                                                                        "1.0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroDouble",
+                                                                                    value: Number(
+                                                                                        "1.0",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborServerPopulatesDefaultsWhenMissingInRequestBody",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Server populates default values when missing in request body.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "server",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/OperationWithDefaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2hkZWZhdWx0c6D/",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaults",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultString",
+                                                                                    value: String(
+                                                                                        "hi",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultBoolean",
+                                                                                    value: Keyword(
+                                                                                        True,
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultList",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultTimestamp",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultBlob",
+                                                                                    value: String(
+                                                                                        "abc",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultByte",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultShort",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultInteger",
+                                                                                    value: Number(
+                                                                                        "10",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultLong",
+                                                                                    value: Number(
+                                                                                        "100",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultFloat",
+                                                                                    value: Number(
+                                                                                        "1.0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultDouble",
+                                                                                    value: Number(
+                                                                                        "1.0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultMap",
+                                                                                    value: Object(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultEnum",
+                                                                                    value: String(
+                                                                                        "FOO",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "defaultIntEnum",
+                                                                                    value: Number(
+                                                                                        "1",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "emptyString",
+                                                                                    value: String(
+                                                                                        "",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "falseBoolean",
+                                                                                    value: Keyword(
+                                                                                        False,
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "emptyBlob",
+                                                                                    value: String(
+                                                                                        "",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroByte",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroShort",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroInteger",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroLong",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroFloat",
+                                                                                    value: Number(
+                                                                                        "0.0",
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "zeroDouble",
+                                                                                    value: Number(
+                                                                                        "0.0",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "topLevelDefault",
+                                                                        value: String(
+                                                                            "hi",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "otherTopLevelDefault",
+                                                                        value: Number(
+                                                                            "0",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborClientUsesExplicitlyProvidedValuesInTopLevel",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Any time a value is provided for a member in the top level of input, it is used, regardless of if its the default.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/OperationWithDefaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v290b3BMZXZlbERlZmF1bHRiaGl0b3RoZXJUb3BMZXZlbERlZmF1bHQA/w==",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "topLevelDefault",
+                                                                        value: String(
+                                                                            "hi",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "otherTopLevelDefault",
+                                                                        value: Number(
+                                                                            "0",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborClientIgnoresNonTopLevelDefaultsOnMembersWithClientOptional",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Typically, non top-level members would have defaults filled in, but if they have the clientOptional trait, the defaults should be ignored.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/OperationWithDefaults",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v3ZjbGllbnRPcHRpb25hbERlZmF1bHRzoP8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "clientOptionalDefaults",
+                                                                        value: Object(
+                                                                            [],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "OperationWithDefaults",
+                        traits: [
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborClientPopulatesDefaultsValuesWhenMissingInResponse",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Client populates default values when missing in response.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultString",
+                                                                        value: String(
+                                                                            "hi",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultBoolean",
+                                                                        value: Keyword(
+                                                                            True,
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultList",
+                                                                        value: Array(
+                                                                            [],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultTimestamp",
+                                                                        value: Number(
+                                                                            "0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultBlob",
+                                                                        value: String(
+                                                                            "abc",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultByte",
+                                                                        value: Number(
+                                                                            "1",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultShort",
+                                                                        value: Number(
+                                                                            "1",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultInteger",
+                                                                        value: Number(
+                                                                            "10",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultLong",
+                                                                        value: Number(
+                                                                            "100",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultFloat",
+                                                                        value: Number(
+                                                                            "1.0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultDouble",
+                                                                        value: Number(
+                                                                            "1.0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultMap",
+                                                                        value: Object(
+                                                                            [],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultEnum",
+                                                                        value: String(
+                                                                            "FOO",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultIntEnum",
+                                                                        value: Number(
+                                                                            "1",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "emptyString",
+                                                                        value: String(
+                                                                            "",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "falseBoolean",
+                                                                        value: Keyword(
+                                                                            False,
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "emptyBlob",
+                                                                        value: String(
+                                                                            "",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroByte",
+                                                                        value: Number(
+                                                                            "0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroShort",
+                                                                        value: Number(
+                                                                            "0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroInteger",
+                                                                        value: Number(
+                                                                            "0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroLong",
+                                                                        value: Number(
+                                                                            "0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroFloat",
+                                                                        value: Number(
+                                                                            "0.0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroDouble",
+                                                                        value: Number(
+                                                                            "0.0",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborClientIgnoresDefaultValuesIfMemberValuesArePresentInResponse",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Client ignores default values if member values are present in the response.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v21kZWZhdWx0U3RyaW5nY2J5ZW5kZWZhdWx0Qm9vbGVhbvRrZGVmYXVsdExpc3SBYWFwZGVmYXVsdFRpbWVzdGFtcMH7QAAAAAAAAABrZGVmYXVsdEJsb2JCaGlrZGVmYXVsdEJ5dGUCbGRlZmF1bHRTaG9ydAJuZGVmYXVsdEludGVnZXIUa2RlZmF1bHRMb25nGMhsZGVmYXVsdEZsb2F0+kAAAABtZGVmYXVsdERvdWJsZftAAAAAAAAAAGpkZWZhdWx0TWFwoWRuYW1lZEphY2trZGVmYXVsdEVudW1jQkFSbmRlZmF1bHRJbnRFbnVtAmtlbXB0eVN0cmluZ2Nmb29sZmFsc2VCb29sZWFu9WllbXB0eUJsb2JCaGloemVyb0J5dGUBaXplcm9TaG9ydAFremVyb0ludGVnZXIBaHplcm9Mb25nAWl6ZXJvRmxvYXT6P4AAAGp6ZXJvRG91Ymxl+z/wAAAAAAAA/w==",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultString",
+                                                                        value: String(
+                                                                            "bye",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultBoolean",
+                                                                        value: Keyword(
+                                                                            False,
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultList",
+                                                                        value: Array(
+                                                                            [
+                                                                                String(
+                                                                                    "a",
+                                                                                ),
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultTimestamp",
+                                                                        value: Number(
+                                                                            "2",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultBlob",
+                                                                        value: String(
+                                                                            "hi",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultByte",
+                                                                        value: Number(
+                                                                            "2",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultShort",
+                                                                        value: Number(
+                                                                            "2",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultInteger",
+                                                                        value: Number(
+                                                                            "20",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultLong",
+                                                                        value: Number(
+                                                                            "200",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultFloat",
+                                                                        value: Number(
+                                                                            "2.0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultDouble",
+                                                                        value: Number(
+                                                                            "2.0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "name",
+                                                                                    value: String(
+                                                                                        "Jack",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultEnum",
+                                                                        value: String(
+                                                                            "BAR",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "defaultIntEnum",
+                                                                        value: Number(
+                                                                            "2",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "emptyString",
+                                                                        value: String(
+                                                                            "foo",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "falseBoolean",
+                                                                        value: Keyword(
+                                                                            True,
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "emptyBlob",
+                                                                        value: String(
+                                                                            "hi",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroByte",
+                                                                        value: Number(
+                                                                            "1",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroShort",
+                                                                        value: Number(
+                                                                            "1",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroInteger",
+                                                                        value: Number(
+                                                                            "1",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroLong",
+                                                                        value: Number(
+                                                                            "1",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroFloat",
+                                                                        value: Number(
+                                                                            "1.0",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "zeroDouble",
+                                                                        value: Number(
+                                                                            "1.0",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborServerPopulatesDefaultsInResponseWhenMissingInParams",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Server populates default values in response when missing in params.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "server",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "tags",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "defaults",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v21kZWZhdWx0U3RyaW5nYmhpbmRlZmF1bHRCb29sZWFu9WtkZWZhdWx0TGlzdIBwZGVmYXVsdFRpbWVzdGFtcMH7AAAAAAAAAABrZGVmYXVsdEJsb2JDYWJja2RlZmF1bHRCeXRlAWxkZWZhdWx0U2hvcnQBbmRlZmF1bHRJbnRlZ2VyCmtkZWZhdWx0TG9uZxhkbGRlZmF1bHRGbG9hdPo/gAAAbWRlZmF1bHREb3VibGX7P/AAAAAAAABqZGVmYXVsdE1hcKBrZGVmYXVsdEVudW1jRk9PbmRlZmF1bHRJbnRFbnVtAWtlbXB0eVN0cmluZ2BsZmFsc2VCb29sZWFu9GllbXB0eUJsb2JAaHplcm9CeXRlAGl6ZXJvU2hvcnQAa3plcm9JbnRlZ2VyAGh6ZXJvTG9uZwBpemVyb0Zsb2F0+gAAAABqemVyb0RvdWJsZfsAAAAAAAAAAP8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "OperationWithDefaults",
+                                mixins: [],
+                                body: [
+                                    Input(
+                                        Inline(
+                                            InlineAggregateShape {
+                                                traits: [],
+                                                for_resource: None,
+                                                mixins: [],
+                                                members: [
+                                                    ShapeMember {
+                                                        traits: [],
+                                                        identifier: "defaults",
+                                                        shape_id: Some(
+                                                            "Defaults",
+                                                        ),
+                                                        value: None,
+                                                    },
+                                                    ShapeMember {
+                                                        traits: [],
+                                                        identifier: "clientOptionalDefaults",
+                                                        shape_id: Some(
+                                                            "ClientOptionalDefaults",
+                                                        ),
+                                                        value: None,
+                                                    },
+                                                    ShapeMember {
+                                                        traits: [],
+                                                        identifier: "topLevelDefault",
+                                                        shape_id: Some(
+                                                            "String",
+                                                        ),
+                                                        value: Some(
+                                                            String(
+                                                                "hi",
+                                                            ),
+                                                        ),
+                                                    },
+                                                    ShapeMember {
+                                                        traits: [],
+                                                        identifier: "otherTopLevelDefault",
+                                                        shape_id: Some(
+                                                            "Integer",
+                                                        ),
+                                                        value: Some(
+                                                            Number(
+                                                                "0",
+                                                            ),
+                                                        ),
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ),
+                                    Output(
+                                        Inline(
+                                            InlineAggregateShape {
+                                                traits: [],
+                                                for_resource: None,
+                                                mixins: [
+                                                    "DefaultsMixin",
+                                                ],
+                                                members: [],
+                                            },
+                                        ),
+                                    ),
+                                    Errors(
+                                        [
+                                            "ValidationException",
+                                        ],
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "Defaults",
+                                for_resource: None,
+                                mixins: [
+                                    "DefaultsMixin",
+                                ],
+                                members: [],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "ClientOptionalDefaults",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [
+                                            Trait {
+                                                shape_id: "clientOptional",
+                                                body: None,
+                                            },
+                                        ],
+                                        identifier: "member",
+                                        shape_id: Some(
+                                            "Integer",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0",
+                                            ),
+                                        ),
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "mixin",
+                                body: None,
+                            },
+                        ],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "DefaultsMixin",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultString",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: Some(
+                                            String(
+                                                "hi",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultBoolean",
+                                        shape_id: Some(
+                                            "Boolean",
+                                        ),
+                                        value: Some(
+                                            Keyword(
+                                                True,
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultList",
+                                        shape_id: Some(
+                                            "TestStringList",
+                                        ),
+                                        value: Some(
+                                            Array(
+                                                [],
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultTimestamp",
+                                        shape_id: Some(
+                                            "Timestamp",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultBlob",
+                                        shape_id: Some(
+                                            "Blob",
+                                        ),
+                                        value: Some(
+                                            String(
+                                                "YWJj",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultByte",
+                                        shape_id: Some(
+                                            "Byte",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "1",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultShort",
+                                        shape_id: Some(
+                                            "Short",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "1",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultInteger",
+                                        shape_id: Some(
+                                            "Integer",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "10",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultLong",
+                                        shape_id: Some(
+                                            "Long",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "100",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultFloat",
+                                        shape_id: Some(
+                                            "Float",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "1.0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultDouble",
+                                        shape_id: Some(
+                                            "Double",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "1.0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultMap",
+                                        shape_id: Some(
+                                            "TestStringMap",
+                                        ),
+                                        value: Some(
+                                            Object(
+                                                [],
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultEnum",
+                                        shape_id: Some(
+                                            "TestEnum",
+                                        ),
+                                        value: Some(
+                                            String(
+                                                "FOO",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "defaultIntEnum",
+                                        shape_id: Some(
+                                            "TestIntEnum",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "1",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "emptyString",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: Some(
+                                            String(
+                                                "",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "falseBoolean",
+                                        shape_id: Some(
+                                            "Boolean",
+                                        ),
+                                        value: Some(
+                                            Keyword(
+                                                False,
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "emptyBlob",
+                                        shape_id: Some(
+                                            "Blob",
+                                        ),
+                                        value: Some(
+                                            String(
+                                                "",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "zeroByte",
+                                        shape_id: Some(
+                                            "Byte",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "zeroShort",
+                                        shape_id: Some(
+                                            "Short",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "zeroInteger",
+                                        shape_id: Some(
+                                            "Integer",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "zeroLong",
+                                        shape_id: Some(
+                                            "Long",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "zeroFloat",
+                                        shape_id: Some(
+                                            "Float",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0.0",
+                                            ),
+                                        ),
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "zeroDouble",
+                                        shape_id: Some(
+                                            "Double",
+                                        ),
+                                        value: Some(
+                                            Number(
+                                                "0.0",
+                                            ),
+                                        ),
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: List,
+                                identifier: "TestStringList",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "member",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "TestStringMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Enum(
+                            EnumShape {
+                                type_name: Enum,
+                                identifier: "TestEnum",
+                                mixins: [],
+                                members: [
+                                    EnumShapeMember {
+                                        traits: [],
+                                        identifier: "FOO",
+                                        value: None,
+                                    },
+                                    EnumShapeMember {
+                                        traits: [],
+                                        identifier: "BAR",
+                                        value: None,
+                                    },
+                                    EnumShapeMember {
+                                        traits: [],
+                                        identifier: "BAZ",
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Enum(
+                            EnumShape {
+                                type_name: IntEnum,
+                                identifier: "TestIntEnum",
+                                mixins: [],
+                                members: [
+                                    EnumShapeMember {
+                                        traits: [],
+                                        identifier: "ONE",
+                                        value: Some(
+                                            Number(
+                                                "1",
+                                            ),
+                                        ),
+                                    },
+                                    EnumShapeMember {
+                                        traits: [],
+                                        identifier: "TWO",
+                                        value: Some(
+                                            Number(
+                                                "2",
+                                            ),
+                                        ),
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+            ],
+        },
+    ),
+}

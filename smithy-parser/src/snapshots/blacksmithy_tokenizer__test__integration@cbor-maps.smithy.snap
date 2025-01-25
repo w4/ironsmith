@@ -1,0 +1,2408 @@
+---
+source: smithy-parser/src/lib.rs
+expression: ast
+input_file: smithy-parser/fixtures/cbor-maps.smithy
+---
+Ast {
+    control: [
+        (
+            "version",
+            String(
+                "2.0",
+            ),
+        ),
+    ],
+    metadata: [],
+    shapes: Some(
+        ShapeSection {
+            namespace: "smithy.protocoltests.rpcv2Cbor",
+            uses: [
+                "smithy.protocoltests.shared#FooEnumMap",
+                "smithy.protocoltests.shared#GreetingStruct",
+                "smithy.protocoltests.shared#SparseStringMap",
+                "smithy.protocoltests.shared#StringSet",
+                "smithy.test#httpRequestTests",
+                "smithy.test#httpResponseTests",
+                "smithy.protocols#rpcv2Cbor",
+                "smithy.framework#ValidationException",
+            ],
+            shapes: [
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "RpcV2CborDenseMaps",
+                                mixins: [],
+                                body: [
+                                    Input(
+                                        Explicit(
+                                            "RpcV2CborDenseMapsInputOutput",
+                                        ),
+                                    ),
+                                    Output(
+                                        Explicit(
+                                            "RpcV2CborDenseMapsInputOutput",
+                                        ),
+                                    ),
+                                    Errors(
+                                        [
+                                            "ValidationException",
+                                        ],
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "RpcV2CborDenseMaps",
+                        traits: [
+                            Trait {
+                                shape_id: "httpRequestTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Serializes maps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborDenseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "oW5kZW5zZVN0cnVjdE1hcKJjZm9voWJoaWV0aGVyZWNiYXqhYmhpY2J5ZQ==",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseStructMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "foo",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "there",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "baz",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "bye",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSerializesZeroValuesInMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Ensure that 0 and false are sent over the wire in all maps and lists",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborDenseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "om5kZW5zZU51bWJlck1hcKFheABvZGVuc2VCb29sZWFuTWFwoWF49A==",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseNumberMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseBooleanMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        False,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSerializesDenseSetMap",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "A request that contains a dense map of sets.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborDenseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "oWtkZW5zZVNldE1hcKJheIBheYJhYWFi",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseSetMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "y",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                            String(
+                                                                                                "b",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "RpcV2CborDenseMaps",
+                        traits: [
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Deserializes maps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "oW5kZW5zZVN0cnVjdE1hcKJjZm9voWJoaWV0aGVyZWNiYXqhYmhpY2J5ZQ==",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseStructMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "foo",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "there",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "baz",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "bye",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDeserializesZeroValuesInMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Ensure that 0 and false are sent over the wire in all maps and lists",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "om5kZW5zZU51bWJlck1hcKFheABvZGVuc2VCb29sZWFuTWFwoWF49A==",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseNumberMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseBooleanMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        False,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDeserializesDenseSetMap",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "A response that contains a dense map of sets",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "oWtkZW5zZVNldE1hcKJheIBheYJhYWFi",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseSetMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "y",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                            String(
+                                                                                                "b",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDeserializesDenseSetMapAndSkipsNull",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "            Clients SHOULD tolerate seeing a null value in a dense map, and they SHOULD\n            drop the null key-value pair.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "oWtkZW5zZVNldE1hcKNheIBheYJhYWFiYXr2",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "denseSetMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "y",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                            String(
+                                                                                                "b",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "RpcV2CborDenseMapsInputOutput",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "denseStructMap",
+                                        shape_id: Some(
+                                            "DenseStructMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "denseNumberMap",
+                                        shape_id: Some(
+                                            "DenseNumberMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "denseBooleanMap",
+                                        shape_id: Some(
+                                            "DenseBooleanMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "denseStringMap",
+                                        shape_id: Some(
+                                            "DenseStringMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "denseSetMap",
+                                        shape_id: Some(
+                                            "DenseSetMap",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "DenseStructMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "GreetingStruct",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "DenseBooleanMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "Boolean",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "DenseNumberMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "Integer",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "DenseStringMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "DenseSetMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "StringSet",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "RpcV2CborSparseMaps",
+                        traits: [
+                            Trait {
+                                shape_id: "httpRequestTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Serializes sparse maps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v29zcGFyc2VTdHJ1Y3RNYXC/Y2Zvb79iaGlldGhlcmX/Y2Jher9iaGljYnll////",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseStructMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "foo",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "there",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "baz",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "bye",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSerializesNullMapValues",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Serializes null map values in sparse maps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v3BzcGFyc2VCb29sZWFuTWFwv2F49v9vc3BhcnNlTnVtYmVyTWFwv2F49v9vc3BhcnNlU3RyaW5nTWFwv2F49v9vc3BhcnNlU3RydWN0TWFwv2F49v//",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseBooleanMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseNumberMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseStringMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseStructMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSerializesSparseSetMap",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "A request that contains a sparse map of sets",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2xzcGFyc2VTZXRNYXC/YXif/2F5n2FhYWL///8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseSetMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "y",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                            String(
+                                                                                                "b",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSerializesSparseSetMapAndRetainsNull",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "A request that contains a sparse map of sets.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2xzcGFyc2VTZXRNYXC/YXif/2F5n2FhYWL/YXr2//8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseSetMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "y",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                            String(
+                                                                                                "b",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "z",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSerializesZeroValuesInSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Ensure that 0 and false are sent over the wire in all maps and lists",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/RpcV2CborSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v29zcGFyc2VOdW1iZXJNYXC/YXgA/3BzcGFyc2VCb29sZWFuTWFwv2F49P//",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseNumberMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseBooleanMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        False,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "RpcV2CborSparseMaps",
+                        traits: [
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborSparseJsonMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Deserializes sparse maps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v29zcGFyc2VTdHJ1Y3RNYXC/Y2Zvb79iaGlldGhlcmX/Y2Jher9iaGljYnll////",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseStructMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "foo",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "there",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "baz",
+                                                                                    value: Object(
+                                                                                        [
+                                                                                            NodeKeyValuePair {
+                                                                                                key: "hi",
+                                                                                                value: String(
+                                                                                                    "bye",
+                                                                                                ),
+                                                                                            },
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDeserializesNullMapValues",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Deserializes null map values",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v3BzcGFyc2VCb29sZWFuTWFwv2F49v9vc3BhcnNlTnVtYmVyTWFwv2F49v9vc3BhcnNlU3RyaW5nTWFwv2F49v9vc3BhcnNlU3RydWN0TWFwv2F49v//",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseBooleanMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseNumberMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseStringMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseStructMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDeserializesSparseSetMap",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "A response that contains a sparse map of sets",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2xzcGFyc2VTZXRNYXC/YXmfYWFhYv9heJ////8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseSetMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "y",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                            String(
+                                                                                                "b",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDeserializesSparseSetMapAndRetainsNull",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "A response that contains a sparse map of sets with a null",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2xzcGFyc2VTZXRNYXC/YXif/2F5n2FhYWL/YXr2//8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseSetMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Array(
+                                                                                        [],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "y",
+                                                                                    value: Array(
+                                                                                        [
+                                                                                            String(
+                                                                                                "a",
+                                                                                            ),
+                                                                                            String(
+                                                                                                "b",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                },
+                                                                                NodeKeyValuePair {
+                                                                                    key: "z",
+                                                                                    value: Keyword(
+                                                                                        Null,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDeserializesZeroValuesInSparseMaps",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Ensure that 0 and false are sent over the wire in all maps and lists",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v29zcGFyc2VOdW1iZXJNYXC/YXgA/3BzcGFyc2VCb29sZWFuTWFwv2F49P//",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseNumberMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Number(
+                                                                                        "0",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "sparseBooleanMap",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "x",
+                                                                                    value: Keyword(
+                                                                                        False,
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "RpcV2CborSparseMaps",
+                                mixins: [],
+                                body: [
+                                    Input(
+                                        Explicit(
+                                            "RpcV2CborSparseMapsInputOutput",
+                                        ),
+                                    ),
+                                    Output(
+                                        Explicit(
+                                            "RpcV2CborSparseMapsInputOutput",
+                                        ),
+                                    ),
+                                    Errors(
+                                        [
+                                            "ValidationException",
+                                        ],
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "RpcV2CborSparseMapsInputOutput",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "sparseStructMap",
+                                        shape_id: Some(
+                                            "SparseStructMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "sparseNumberMap",
+                                        shape_id: Some(
+                                            "SparseNumberMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "sparseBooleanMap",
+                                        shape_id: Some(
+                                            "SparseBooleanMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "sparseStringMap",
+                                        shape_id: Some(
+                                            "SparseStringMap",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "sparseSetMap",
+                                        shape_id: Some(
+                                            "SparseSetMap",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "sparse",
+                                body: None,
+                            },
+                        ],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "SparseStructMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "GreetingStruct",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "sparse",
+                                body: None,
+                            },
+                        ],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "SparseBooleanMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "Boolean",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "sparse",
+                                body: None,
+                            },
+                        ],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "SparseNumberMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "Integer",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "sparse",
+                                body: None,
+                            },
+                        ],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Map,
+                                identifier: "SparseSetMap",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "key",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "StringSet",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+            ],
+        },
+    ),
+}

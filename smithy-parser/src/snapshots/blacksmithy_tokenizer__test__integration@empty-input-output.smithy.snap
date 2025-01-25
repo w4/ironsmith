@@ -1,0 +1,1071 @@
+---
+source: smithy-parser/src/lib.rs
+expression: ast
+input_file: smithy-parser/fixtures/empty-input-output.smithy
+---
+Ast {
+    control: [
+        (
+            "version",
+            String(
+                "2.0",
+            ),
+        ),
+    ],
+    metadata: [],
+    shapes: Some(
+        ShapeSection {
+            namespace: "smithy.protocoltests.rpcv2Cbor",
+            uses: [
+                "smithy.protocols#rpcv2Cbor",
+                "smithy.test#httpRequestTests",
+                "smithy.test#httpResponseTests",
+            ],
+            shapes: [
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "httpRequestTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "no_input",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Body is empty and no Content-Type header if no input",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "forbidHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Type",
+                                                                    ),
+                                                                    String(
+                                                                        "X-Amz-Target",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "NoInputServerAllowsEmptyCbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Servers should accept CBOR empty struct if no input.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "server",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "NoInputServerAllowsEmptyBody",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "            Servers should accept an empty body if there is no input. Additionally,\n            they should not raise an error if the `Accept` header is set.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "server",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "no_output",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "A `Content-Type` header should not be set if the response body is empty.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "forbidHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Type",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "NoOutputClientAllowsEmptyCbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Clients should accept a CBOR empty struct if there is no output.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "NoOutputClientAllowsEmptyBody",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "            Clients should accept an empty body if there is no output and\n            should not raise an error if the `Content-Type` header is set.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "NoInputOutput",
+                                mixins: [],
+                                body: [],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "httpRequestTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "empty_input",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "When Input structure is empty we write CBOR equivalent of {}",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "requireHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "Content-Length",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "forbidHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "X-Amz-Target",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "empty_input_no_body",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "When Input structure is empty the server should accept an empty body",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "server",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "empty_input_no_body_has_accept",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "            When input structure, is empty the server should accept an empty body\n            even if the Accept header is set.",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "server",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "empty_output",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "When output structure is empty we write CBOR equivalent of {}",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "empty_output_no_body",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "When output structure is empty the client should accept an empty body",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "EmptyInputOutput",
+                                mixins: [],
+                                body: [
+                                    Input(
+                                        Explicit(
+                                            "EmptyStructure",
+                                        ),
+                                    ),
+                                    Output(
+                                        Explicit(
+                                            "EmptyStructure",
+                                        ),
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "httpRequestTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "optional_input",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "When input is empty we write CBOR equivalent of {}",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Accept",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "forbidHeaders",
+                                                            value: Array(
+                                                                [
+                                                                    String(
+                                                                        "X-Amz-Target",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "method",
+                                                            value: String(
+                                                                "POST",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "uri",
+                                                            value: String(
+                                                                "/service/RpcV2Protocol/operation/OptionalInputOutput",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "optional_output",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "When output is empty we write CBOR equivalent of {}",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v/8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "OptionalInputOutput",
+                                mixins: [],
+                                body: [
+                                    Input(
+                                        Explicit(
+                                            "SimpleStructure",
+                                        ),
+                                    ),
+                                    Output(
+                                        Explicit(
+                                            "SimpleStructure",
+                                        ),
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+            ],
+        },
+    ),
+}

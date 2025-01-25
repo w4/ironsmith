@@ -1,0 +1,425 @@
+---
+source: smithy-parser/src/lib.rs
+expression: ast
+input_file: smithy-parser/fixtures/errors.smithy
+---
+Ast {
+    control: [
+        (
+            "version",
+            String(
+                "2.0",
+            ),
+        ),
+    ],
+    metadata: [],
+    shapes: Some(
+        ShapeSection {
+            namespace: "smithy.protocoltests.rpcv2Cbor",
+            uses: [
+                "smithy.test#httpRequestTests",
+                "smithy.test#httpResponseTests",
+                "smithy.protocols#rpcv2Cbor",
+            ],
+            shapes: [
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "idempotent",
+                                body: None,
+                            },
+                        ],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "GreetingWithErrors",
+                                mixins: [],
+                                body: [
+                                    Output(
+                                        Explicit(
+                                            "GreetingWithErrorsOutput",
+                                        ),
+                                    ),
+                                    Errors(
+                                        [
+                                            "InvalidGreeting",
+                                            "ComplexError",
+                                        ],
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "GreetingWithErrorsOutput",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "greeting",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "error",
+                                body: Some(
+                                    Node(
+                                        String(
+                                            "client",
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "InvalidGreeting",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "Message",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "InvalidGreeting",
+                        traits: [
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborInvalidGreetingError",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Parses simple RpcV2 Cbor errors",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "Message",
+                                                                        value: String(
+                                                                            "Hi",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "400",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2ZfX3R5cGV4LnNtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNJbnZhbGlkR3JlZXRpbmdnTWVzc2FnZWJIaf8=",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "error",
+                                body: Some(
+                                    Node(
+                                        String(
+                                            "client",
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "ComplexError",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "TopLevel",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "Nested",
+                                        shape_id: Some(
+                                            "ComplexNestedErrorData",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "ComplexNestedErrorData",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "Foo",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "ComplexError",
+                        traits: [
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborComplexError",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Parses a complex error with no message member",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "TopLevel",
+                                                                        value: String(
+                                                                            "Top level",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Nested",
+                                                                        value: Object(
+                                                                            [
+                                                                                NodeKeyValuePair {
+                                                                                    key: "Foo",
+                                                                                    value: String(
+                                                                                        "bar",
+                                                                                    ),
+                                                                                },
+                                                                            ],
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "400",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2ZfX3R5cGV4K3NtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNDb21wbGV4RXJyb3JoVG9wTGV2ZWxpVG9wIGxldmVsZk5lc3RlZL9jRm9vY2Jhcv//",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborEmptyComplexError",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "400",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2ZfX3R5cGV4K3NtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNDb21wbGV4RXJyb3L/",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+            ],
+        },
+    ),
+}

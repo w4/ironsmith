@@ -6,3 +6,6 @@ edition = "2024"
 
 [dependencies]
 nom = "7.1"
+
+[dev-dependencies]
+insta = { version = "1.42", features = ["glob"] }

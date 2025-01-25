@@ -1,0 +1,180 @@
+---
+source: smithy-parser/src/lib.rs
+expression: ast
+input_file: smithy-parser/fixtures/fractional-seconds.smithy
+---
+Ast {
+    control: [
+        (
+            "version",
+            String(
+                "2.0",
+            ),
+        ),
+    ],
+    metadata: [],
+    shapes: Some(
+        ShapeSection {
+            namespace: "smithy.protocoltests.rpcv2Cbor",
+            uses: [
+                "smithy.protocols#rpcv2Cbor",
+                "smithy.protocoltests.shared#DateTime",
+                "smithy.test#httpResponseTests",
+            ],
+            shapes: [
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "tags",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                String(
+                                                    "client-only",
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                        shape: Operation(
+                            OperationShape {
+                                identifier: "FractionalSeconds",
+                                mixins: [],
+                                body: [
+                                    Output(
+                                        Explicit(
+                                            "FractionalSecondsOutput",
+                                        ),
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Apply(
+                    ApplyStatement {
+                        shape_id: "FractionalSeconds",
+                        traits: [
+                            Trait {
+                                shape_id: "httpResponseTests",
+                                body: Some(
+                                    Node(
+                                        Array(
+                                            [
+                                                Object(
+                                                    [
+                                                        NodeKeyValuePair {
+                                                            key: "id",
+                                                            value: String(
+                                                                "RpcV2CborDateTimeWithFractionalSeconds",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "documentation",
+                                                            value: String(
+                                                                "Ensures that clients can correctly parse timestamps with fractional seconds",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "protocol",
+                                                            value: String(
+                                                                "rpcv2Cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "code",
+                                                            value: Number(
+                                                                "200",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "body",
+                                                            value: String(
+                                                                "v2hkYXRldGltZcH7Qcw32zgPvnf/",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "headers",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "smithy-protocol",
+                                                                        value: String(
+                                                                            "rpc-v2-cbor",
+                                                                        ),
+                                                                    },
+                                                                    NodeKeyValuePair {
+                                                                        key: "Content-Type",
+                                                                        value: String(
+                                                                            "application/cbor",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "params",
+                                                            value: Object(
+                                                                [
+                                                                    NodeKeyValuePair {
+                                                                        key: "datetime",
+                                                                        value: Number(
+                                                                            "946845296.123",
+                                                                        ),
+                                                                    },
+                                                                ],
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "bodyMediaType",
+                                                            value: String(
+                                                                "application/cbor",
+                                                            ),
+                                                        },
+                                                        NodeKeyValuePair {
+                                                            key: "appliesTo",
+                                                            value: String(
+                                                                "client",
+                                                            ),
+                                                        },
+                                                    ],
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "FractionalSecondsOutput",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "datetime",
+                                        shape_id: Some(
+                                            "DateTime",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+            ],
+        },
+    ),
+}

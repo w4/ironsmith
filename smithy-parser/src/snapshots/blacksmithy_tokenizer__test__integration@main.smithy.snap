@@ -1,0 +1,146 @@
+---
+source: smithy-parser/src/lib.rs
+expression: ast
+input_file: smithy-parser/fixtures/main.smithy
+---
+Ast {
+    control: [
+        (
+            "version",
+            String(
+                "2.0",
+            ),
+        ),
+    ],
+    metadata: [],
+    shapes: Some(
+        ShapeSection {
+            namespace: "smithy.protocoltests.rpcv2Cbor",
+            uses: [
+                "smithy.protocols#rpcv2Cbor",
+                "smithy.test#httpRequestTests",
+                "smithy.test#httpResponseTests",
+            ],
+            shapes: [
+                Shape(
+                    ShapeWithTraits {
+                        traits: [
+                            Trait {
+                                shape_id: "rpcv2Cbor",
+                                body: None,
+                            },
+                            Trait {
+                                shape_id: "title",
+                                body: Some(
+                                    Node(
+                                        String(
+                                            "RpcV2 Protocol Service",
+                                        ),
+                                    ),
+                                ),
+                            },
+                        ],
+                        shape: Entity(
+                            EntityShape {
+                                type_name: Service,
+                                identifier: "RpcV2Protocol",
+                                mixins: [],
+                                nodes: [
+                                    NodeKeyValuePair {
+                                        key: "version",
+                                        value: String(
+                                            "2020-07-14",
+                                        ),
+                                    },
+                                    NodeKeyValuePair {
+                                        key: "operations",
+                                        value: Array(
+                                            [
+                                                String(
+                                                    "NoInputOutput",
+                                                ),
+                                                String(
+                                                    "EmptyInputOutput",
+                                                ),
+                                                String(
+                                                    "OptionalInputOutput",
+                                                ),
+                                                String(
+                                                    "SimpleScalarProperties",
+                                                ),
+                                                String(
+                                                    "RpcV2CborLists",
+                                                ),
+                                                String(
+                                                    "RpcV2CborDenseMaps",
+                                                ),
+                                                String(
+                                                    "RpcV2CborSparseMaps",
+                                                ),
+                                                String(
+                                                    "RecursiveShapes",
+                                                ),
+                                                String(
+                                                    "GreetingWithErrors",
+                                                ),
+                                                String(
+                                                    "FractionalSeconds",
+                                                ),
+                                                String(
+                                                    "OperationWithDefaults",
+                                                ),
+                                                String(
+                                                    "SparseNullsOperation",
+                                                ),
+                                                String(
+                                                    "Float16",
+                                                ),
+                                            ],
+                                        ),
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "EmptyStructure",
+                                for_resource: None,
+                                mixins: [],
+                                members: [],
+                            },
+                        ),
+                    },
+                ),
+                Shape(
+                    ShapeWithTraits {
+                        traits: [],
+                        shape: Aggregate(
+                            AggregateShape {
+                                type_name: Structure,
+                                identifier: "SimpleStructure",
+                                for_resource: None,
+                                mixins: [],
+                                members: [
+                                    ShapeMember {
+                                        traits: [],
+                                        identifier: "value",
+                                        shape_id: Some(
+                                            "String",
+                                        ),
+                                        value: None,
+                                    },
+                                ],
+                            },
+                        ),
+                    },
+                ),
+            ],
+        },
+    ),
+}

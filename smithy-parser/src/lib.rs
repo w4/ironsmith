@@ -51,7 +51,7 @@ pub mod comment {
         sequence::delimited,
     };
 
-    /// ```
+    /// ```text
     /// Comment = DocumentationComment / LineComment
     /// ```
     pub fn comment(input: &str) -> IResult<&str, &str> {
@@ -61,14 +61,14 @@ pub mod comment {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// DocumentationComment = "///" *NotNL NL
     /// ```
     pub fn documentation_comment(input: &str) -> IResult<&str, Option<&str>> {
         delimited(tag("///"), opt(not_line_ending), line_ending)(input)
     }
 
-    /// ```
+    /// ```text
     /// LineComment = "//" [(%x09 / %x20-2E / %x30-10FFF) *NotNL] NL ; First character after "//" can't be "/"
     /// ```
     pub fn line_comment(input: &str) -> IResult<&str, Option<&str>> {
@@ -86,21 +86,21 @@ pub mod whitespace {
         sequence::delimited,
     };
 
-    /// ```
+    /// ```text
     /// WS = 1*(SP / NL / Comment / Comma) ; whitespace
     /// ```
     pub fn ws(input: &str) -> IResult<&str, Vec<&str>> {
         many1(alt((multispace1, super::comment::comment, comma)))(input)
     }
 
-    /// ```
+    /// ```text
     /// Comma = ","
     /// ```
     pub fn comma(input: &str) -> IResult<&str, &str> {
         recognize(char(','))(input)
     }
 
-    /// ```
+    /// ```text
     /// BR = [SP] 1*(Comment / NL) [WS]; line break followed by whitespace
     /// ```
     pub fn br(input: &str) -> IResult<&str, Vec<&str>> {
@@ -126,14 +126,14 @@ pub mod control {
         whitespace::br,
     };
 
-    /// ```
+    /// ```text
     /// ControlSection = *(ControlStatement)
     /// ```
     pub fn control_section(input: &str) -> IResult<&str, Vec<(&str, NodeValue<'_>)>> {
         many0(control_statement)(input)
     }
 
-    /// ```
+    /// ```text
     /// ControlStatement = "$" NodeObjectKey [SP] ":" [SP] NodeValue BR
     /// ```
     pub fn control_statement(input: &str) -> IResult<&str, (&str, NodeValue<'_>)> {
@@ -166,14 +166,14 @@ pub mod metadata {
         whitespace::br,
     };
 
-    /// ```
+    /// ```text
     /// MetadataSection = *(MetadataStatement)
     /// ```
     pub fn metadata_section(input: &str) -> IResult<&str, Vec<(&str, NodeValue<'_>)>> {
         many0(metadata_statement)(input)
     }
 
-    /// ```
+    /// ```text
     /// MetadataStatement = %s"metadata" SP NodeObjectKey [SP] "=" [SP] NodeValue BR
     /// ```
     pub fn metadata_statement(input: &str) -> IResult<&str, (&str, NodeValue<'_>)> {
@@ -230,14 +230,14 @@ pub mod node_values {
         Null,
     }
 
-    /// ```
+    /// ```text
     /// NodeValue =
-    //   NodeArray
-    // / NodeObject
-    // / Number
-    // / NodeKeyword
-    // / NodeStringValue
-    // ```
+    ///   NodeArray
+    /// / NodeObject
+    /// / Number
+    /// / NodeKeyword
+    /// / NodeStringValue
+    /// ```
     pub fn node_value(input: &str) -> IResult<&str, NodeValue<'_>> {
         alt((
             map(node_array, NodeValue::Array),
@@ -248,20 +248,20 @@ pub mod node_values {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// NodeArray = "[" [WS] *(NodeValue [WS]) "]"
     /// ```
     pub fn node_array(input: &str) -> IResult<&str, Vec<NodeValue<'_>>> {
         preceded(
             char('['),
             cut(terminated(
-                preceded(opt(ws), separated_list0(ws, node_value)),
+                delimited(opt(ws), separated_list0(ws, node_value), opt(ws)),
                 char(']'),
             )),
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// NodeObject = "{" [WS] [NodeObjectKvp *(WS NodeObjectKvp)] [WS] "}"
     /// ```
     pub fn node_object(input: &str) -> IResult<&str, Vec<NodeKeyValuePair<'_>>> {
@@ -274,7 +274,7 @@ pub mod node_values {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// NodeObjectKvp = NodeObjectKey [WS] ":" [WS] NodeValue
     /// ```
     pub fn node_object_kvp(input: &str) -> IResult<&str, NodeKeyValuePair<'_>> {
@@ -288,7 +288,7 @@ pub mod node_values {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// NodeKeyword = %s"true" / %s"false" / %s"null"
     /// ```
     pub fn node_keyword(input: &str) -> IResult<&str, Keyword> {
@@ -299,14 +299,14 @@ pub mod node_values {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// NodeStringValue = ShapeId / TextBlock / QuotedText
     /// ```
     pub fn node_string_value(input: &str) -> IResult<&str, &str> {
         alt((shape_id, text_block, quoted_text))(input)
     }
 
-    /// ```
+    /// ```text
     /// TextBlock = ThreeDquotes [SP] NL *TextBlockContent ThreeDquotes
     /// ```
     pub fn text_block(input: &str) -> IResult<&str, &str> {
@@ -330,14 +330,14 @@ pub mod node_values {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// NodeObjectKey = QuotedText / Identifier
     /// ```
     pub fn node_object_key(input: &str) -> IResult<&str, &str> {
         alt((quoted_text, identifier))(input)
     }
 
-    /// ```
+    /// ```text
     /// QuotedText = DQUOTE *QuotedChar DQUOTE
     /// ```
     pub fn quoted_text(input: &str) -> IResult<&str, &str> {
@@ -347,7 +347,7 @@ pub mod node_values {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// QuotedChar =
     ///     %x09        ; tab
     ///   / %x20-21     ; space - "!"
@@ -364,7 +364,7 @@ pub mod node_values {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// EscapedChar =
     ///     Escape (Escape / DQUOTE / %s"b" / %s"f"
     ///             / %s"n" / %s"r" / %s"t" / "/"
@@ -377,7 +377,7 @@ pub mod node_values {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// UnicodeEscape =     %s"u" Hex Hex Hex Hex
     /// ```
     pub fn unicode_escape(input: &str) -> IResult<&str, &str> {
@@ -399,49 +399,49 @@ pub mod shape_id {
         sequence::{preceded, separated_pair, tuple},
     };
 
-    /// ```
+    /// ```text
     /// ShapeId = RootShapeId [ShapeIdMember]
     /// ```
     pub fn shape_id(input: &str) -> IResult<&str, &str> {
         recognize(tuple((root_shape_id, opt(shape_id_member))))(input)
     }
 
-    /// ```
+    /// ```text
     /// RootShapeId = AbsoluteRootShapeId / Identifier
     /// ```
     pub fn root_shape_id(input: &str) -> IResult<&str, &str> {
         alt((absolute_root_shape_id, identifier))(input)
     }
 
-    /// ```
+    /// ```text
     /// AbsoluteRootShapeId = Namespace "#" Identifier
     /// ```
     pub fn absolute_root_shape_id(input: &str) -> IResult<&str, &str> {
         recognize(separated_pair(namespace, char('#'), identifier))(input)
     }
 
-    /// ```
+    /// ```text
     /// Namespace = Identifier *("." Identifier)
     /// ```
     pub fn namespace(input: &str) -> IResult<&str, &str> {
         recognize(separated_list1(char('.'), identifier))(input)
     }
 
-    /// ```
+    /// ```text
     /// IdentifierStart *IdentifierChars
     /// ```
     pub fn identifier(input: &str) -> IResult<&str, &str> {
         recognize(tuple((identifier_start, take_while(is_identifier_char))))(input)
     }
 
-    /// ```
+    /// ```text
     /// IdentifierStart = (1*"_" (ALPHA / DIGIT)) / ALPHA
     /// ```
     pub fn identifier_start(input: &str) -> IResult<&str, &str> {
         alt((preceded(take_while1(|v| v == '_'), alphanumeric1), alpha1))(input)
     }
 
-    /// ```
+    /// ```text
     /// IdentifierChars = ALPHA / DIGIT / "_"
     /// ```
     #[must_use]
@@ -449,7 +449,7 @@ pub mod shape_id {
         c.is_ascii_alphanumeric() || c == '_'
     }
 
-    /// ```
+    /// ```text
     /// ShapeIdMember = "$" Identifier
     /// ```
     pub fn shape_id_member(input: &str) -> IResult<&str, &str> {
@@ -615,7 +615,7 @@ pub mod shapes {
         pub members: Vec<ShapeMember<'a>>,
     }
 
-    /// ```
+    /// ```text
     /// ShapeSection = [NamespaceStatement UseSection [ShapeStatements]]
     /// ```
     pub fn shape_section(input: &str) -> IResult<&str, Option<ShapeSection<'_>>> {
@@ -629,21 +629,21 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// NamespaceStatement = %s"namespace" SP Namespace BR
     /// ```
     pub fn namespace_statement(input: &str) -> IResult<&str, &str> {
         preceded(tag("namespace"), cut(delimited(space1, namespace, br)))(input)
     }
 
-    /// ```
+    /// ```text
     /// UseSection = *(UseStatement)
     /// ```
     pub fn use_section(input: &str) -> IResult<&str, Vec<&str>> {
         many0(use_statement)(input)
     }
 
-    /// ```
+    /// ```text
     /// UseStatement = %s"use" SP AbsoluteRootShapeId BR
     /// ```
     pub fn use_statement(input: &str) -> IResult<&str, &str> {
@@ -653,14 +653,14 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// ShapeOrApplyStatement *(BR ShapeOrApplyStatement)
     /// ```
     pub fn shape_statements(input: &str) -> IResult<&str, Vec<ShapeOrApply<'_>>> {
         separated_list0(br, shape_or_apply_statement)(input)
     }
 
-    /// ```
+    /// ```text
     /// ShapeOrApplyStatement = ShapeStatement / ApplyStatement
     /// ```
     pub fn shape_or_apply_statement(input: &str) -> IResult<&str, ShapeOrApply<'_>> {
@@ -670,7 +670,7 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// ShapeStatement = TraitStatements Shape
     /// ```
     pub fn shape_statement(input: &str) -> IResult<&str, ShapeWithTraits<'_>> {
@@ -679,7 +679,7 @@ pub mod shapes {
         })(input)
     }
 
-    /// ```
+    /// ```text
     /// Shape =
     ///     SimpleShape
     ///   / EnumShape
@@ -697,7 +697,7 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// SimpleShape = SimpleTypeName SP Identifier [Mixins]
     /// ```
     pub fn simple_shape(input: &str) -> IResult<&str, SimpleShape<'_>> {
@@ -715,7 +715,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// SimpleTypeName =
     ///   %s"blob" / %s"boolean" / %s"document" / %s"string"
     /// / %s"byte" / %s"short" / %s"integer" / %s"long"
@@ -740,7 +740,7 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// Mixins = [SP] %s"with" [WS] "[" [WS] 1*(ShapeId [WS]) "]"
     /// ```
     pub fn mixins(input: &str) -> IResult<&str, Vec<&str>> {
@@ -756,7 +756,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// EnumShape = EnumTypeName SP Identifier [Mixins] [WS] EnumShapeMembers
     /// ```
     pub fn enum_shape(input: &str) -> IResult<&str, EnumShape<'_>> {
@@ -776,7 +776,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// EnumTypeName = %s"enum" / %s"intEnum"
     /// ```
     pub fn enum_type_name(input: &str) -> IResult<&str, EnumTypeName> {
@@ -786,7 +786,7 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// EnumShapeMembers = "{" [WS] 1*(EnumShapeMember [WS]) "}"
     /// ```
     pub fn enum_shape_members(input: &str) -> IResult<&str, Vec<EnumShapeMember<'_>>> {
@@ -797,7 +797,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// EnumShapeMember = TraitStatements Identifier [ValueAssignment]
     /// ```
     pub fn enum_shape_member(input: &str) -> IResult<&str, EnumShapeMember<'_>> {
@@ -811,7 +811,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// ValueAssignment = [SP] "=" [SP] NodeValue [SP] [Comma] BR
     /// ```
     pub fn value_assignment(input: &str) -> IResult<&str, NodeValue<'_>> {
@@ -822,7 +822,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// AggregateShape =
     ///     AggregateTypeName SP Identifier [ForResource] [Mixins]
     ///      [WS] ShapeMembers
@@ -846,7 +846,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// AggregateTypeName = %s"list" / %s"map" / %s"union" / %s"structure"
     /// ```
     pub fn aggregate_shape_name(input: &str) -> IResult<&str, AggregateTypeName> {
@@ -858,25 +858,25 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// ForResource = SP %s"for" SP ShapeId
     /// ```
     pub fn for_resource(input: &str) -> IResult<&str, &str> {
         preceded(tuple((space1, tag("for"), space1)), shape_id)(input)
     }
 
-    /// ```
+    /// ```text
     /// ShapeMembers = "{" [WS] *(ShapeMember [WS]) "}"
     /// ```
     pub fn shape_members(input: &str) -> IResult<&str, Vec<ShapeMember<'_>>> {
         delimited(
             tuple((char('{'), opt(ws))),
-            separated_list1(ws, shape_member),
+            separated_list0(ws, shape_member),
             tuple((opt(ws), char('}'))),
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// ShapeMember = TraitStatements (ExplicitShapeMember / ElidedShapeMember) [ValueAssignment]
     /// ```
     pub fn shape_member(input: &str) -> IResult<&str, ShapeMember<'_>> {
@@ -900,7 +900,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// ExplicitShapeMember = Identifier [SP] ":" [SP] ShapeId
     /// ```
     pub fn explicit_shape_member(input: &str) -> IResult<&str, (&str, &str)> {
@@ -911,14 +911,14 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// ElidedShapeMember = "$" Identifier
     /// ```
     pub fn elided_shape_member(input: &str) -> IResult<&str, &str> {
         preceded(char('$'), cut(identifier))(input)
     }
 
-    /// ```
+    /// ```text
     /// EntityShape = EntityTypeName SP Identifier [Mixins] [WS] NodeObject
     /// ```
     pub fn entity_shape(input: &str) -> IResult<&str, EntityShape<'_>> {
@@ -937,7 +937,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// EntityTypeName = %s"service" / %s"resource"
     /// ```
     pub fn entity_type_name(input: &str) -> IResult<&str, EntityTypeName> {
@@ -947,7 +947,7 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// OperationShape = %s"operation" SP Identifier [Mixins] [WS] OperationBody
     /// ```
     pub fn operation_shape(input: &str) -> IResult<&str, OperationShape<'_>> {
@@ -968,7 +968,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// OperationBody = "{" [WS] *(OperationProperty [WS]) "}"
     /// ```
     pub fn operation_body(input: &str) -> IResult<&str, Vec<OperationProperty<'_>>> {
@@ -979,7 +979,7 @@ pub mod shapes {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// OperationProperty = OperationInput / OperationOutput / OperationErrors
     /// ```
     pub fn operation_property(input: &str) -> IResult<&str, OperationProperty<'_>> {
@@ -990,21 +990,21 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// OperationInput = %s"input" [WS] (InlineAggregateShape / (":" [WS] ShapeId))
     /// ```
     pub fn operation_input(input: &str) -> IResult<&str, OperationPropertyShape<'_>> {
         preceded(tuple((tag("input"), opt(ws))), inline_or_explicit_shape)(input)
     }
 
-    /// ```
+    /// ```text
     /// OperationOutput = %s"output" [WS] (InlineAggregateShape / (":" [WS] ShapeId))
     /// ```
     pub fn operation_output(input: &str) -> IResult<&str, OperationPropertyShape<'_>> {
         preceded(tuple((tag("output"), opt(ws))), inline_or_explicit_shape)(input)
     }
 
-    /// ```
+    /// ```text
     /// OperationErrors = %s"errors" [WS] ":" [WS] "[" [WS] *(ShapeId [WS]) "]"
     /// ```
     pub fn operation_errors(input: &str) -> IResult<&str, Vec<&str>> {
@@ -1031,7 +1031,7 @@ pub mod shapes {
         ))(input)
     }
 
-    /// ```
+    /// ```text
     /// InlineAggregateShape = ":=" [WS] TraitStatements [ForResource] [Mixins] [WS] ShapeMembers
     /// ```
     pub fn inline_aggregate_shape(input: &str) -> IResult<&str, InlineAggregateShape<'_>> {
@@ -1093,14 +1093,14 @@ pub mod traits {
         pub traits: Vec<Trait<'a>>,
     }
 
-    /// ```
+    /// ```text
     /// TraitStatements = *(Trait [WS])
     /// ```
     pub fn trait_statements(input: &str) -> IResult<&str, Vec<Trait<'_>>> {
         terminated(separated_list0(ws, trait_), opt(ws))(input)
     }
 
-    /// ```
+    /// ```text
     /// Trait = "@" ShapeId [TraitBody]
     /// ```
     pub fn trait_(input: &str) -> IResult<&str, Trait<'_>> {
@@ -1113,7 +1113,7 @@ pub mod traits {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// TraitBody = "(" [WS] [TraitStructure / TraitNode] ")"
     /// ```
     pub fn trait_body(input: &str) -> IResult<&str, Option<TraitBody<'_>>> {
@@ -1132,29 +1132,32 @@ pub mod traits {
         )(input)
     }
 
-    /// ```
+    /// ```text
     /// TraitStructure = 1*(NodeObjectKvp [WS])
     /// ```
     pub fn trait_structure(input: &str) -> IResult<&str, Vec<NodeKeyValuePair<'_>>> {
         separated_list1(ws, node_object_kvp)(input)
     }
 
-    /// ```
+    /// ```text
     /// TraitNode = NodeValue [WS]
     /// ```
     pub fn trait_node(input: &str) -> IResult<&str, NodeValue<'_>> {
         terminated(node_value, opt(ws))(input)
     }
 
-    /// ```
+    /// ```text
     /// ApplyStatement = ApplyStatementSingular / ApplyStatementBlock
     /// ApplyStatementSingular = %s"apply" SP ShapeId WS Trait
     /// ApplyStatementBlock = %s"apply" SP ShapeId WS "{" [WS] TraitStatements "}"
     /// ```
     pub fn apply_statement(input: &str) -> IResult<&str, ApplyStatement<'_>> {
         let apply_statement_singular = map(trait_, |v| vec![v]);
-        let apply_statement_block =
-            delimited(char('{'), preceded(opt(ws), trait_statements), char('}'));
+        let apply_statement_block = delimited(
+            char('{'),
+            delimited(opt(ws), trait_statements, opt(ws)),
+            char('}'),
+        );
 
         map(
             preceded(
@@ -1171,6 +1174,23 @@ pub mod traits {
 
 #[cfg(test)]
 mod test {
+    use insta::{assert_debug_snapshot, glob};
+
+    #[test]
+    fn integration() {
+        glob!("../fixtures", "*.smithy", |path| {
+            let input = std::fs::read_to_string(path).unwrap();
+
+            let (rest, ast) = match crate::parse_ast(&input) {
+                Ok(v) => v,
+                Err(e) => panic!("Failed to parse {}: {e}", path.display()),
+            };
+            assert_eq!(rest, "");
+
+            assert_debug_snapshot!(ast);
+        })
+    }
+
     mod control_section {
         use crate::{control::control_section, node_values::NodeValue};
 
