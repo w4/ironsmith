@@ -164,7 +164,7 @@ pub mod node_values {
         Array(Vec<NodeValue<'a>>),
         Object(Vec<NodeKeyValuePair<'a>>),
         Number(&'a str),
-        Keyword(&'a str),
+        Keyword(Keyword),
         String(&'a str),
     }
 
@@ -172,6 +172,13 @@ pub mod node_values {
     pub struct NodeKeyValuePair<'a> {
         pub key: &'a str,
         pub value: NodeValue<'a>,
+    }
+
+    #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+    pub enum Keyword {
+        True,
+        False,
+        Null,
     }
 
     /// NodeValue =
@@ -225,8 +232,12 @@ pub mod node_values {
     }
 
     /// NodeKeyword = %s"true" / %s"false" / %s"null"
-    pub fn node_keyword(input: &str) -> IResult<&str, &str> {
-        alt((tag("true"), tag("false"), tag("null")))(input)
+    pub fn node_keyword(input: &str) -> IResult<&str, Keyword> {
+        alt((
+            map(tag("true"), |_| Keyword::True),
+            map(tag("false"), |_| Keyword::False),
+            map(tag("null"), |_| Keyword::Null),
+        ))(input)
     }
 
     /// NodeStringValue = ShapeId / TextBlock / QuotedText
@@ -402,17 +413,40 @@ pub mod shapes {
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct SimpleShape<'a> {
-        pub type_name: &'a str,
+        pub type_name: SimpleTypeName,
         pub identifier: &'a str,
         pub mixins: Vec<&'a str>,
     }
 
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum SimpleTypeName {
+        Blob,
+        Boolean,
+        Document,
+        String,
+        Byte,
+        Short,
+        Integer,
+        Long,
+        Float,
+        Double,
+        BigInteger,
+        BigDecimal,
+        Timestamp,
+    }
+
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct EnumShape<'a> {
-        pub type_name: &'a str,
+        pub type_name: EnumTypeName,
         pub identifier: &'a str,
         pub mixins: Vec<&'a str>,
         pub members: Vec<EnumShapeMember<'a>>,
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum EnumTypeName {
+        Enum,
+        IntEnum,
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -424,11 +458,19 @@ pub mod shapes {
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct AggregateShape<'a> {
-        pub type_name: &'a str,
+        pub type_name: AggregateTypeName,
         pub identifier: &'a str,
         pub for_resource: Option<&'a str>,
         pub mixins: Vec<&'a str>,
         pub members: Vec<ShapeMember<'a>>,
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum AggregateTypeName {
+        Structure,
+        Union,
+        Map,
+        List,
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -441,10 +483,16 @@ pub mod shapes {
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct EntityShape<'a> {
-        pub type_name: &'a str,
+        pub type_name: EntityTypeName,
         pub identifier: &'a str,
         pub mixins: Vec<&'a str>,
         pub nodes: Vec<NodeKeyValuePair<'a>>,
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum EntityTypeName {
+        Resource,
+        Service,
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -562,22 +610,21 @@ pub mod shapes {
     /// / %s"byte" / %s"short" / %s"integer" / %s"long"
     /// / %s"float" / %s"double" / %s"bigInteger"
     /// / %s"bigDecimal" / %s"timestamp"
-    pub fn simple_type_name(input: &str) -> IResult<&str, &str> {
+    pub fn simple_type_name(input: &str) -> IResult<&str, SimpleTypeName> {
         alt((
-            tag("blob"),
-            tag("boolean"),
-            tag("document"),
-            tag("string"),
-            tag("byte"),
-            tag("short"),
-            tag("short"),
-            tag("integer"),
-            tag("long"),
-            tag("float"),
-            tag("double"),
-            tag("bigInteger"),
-            tag("bigDecimal"),
-            tag("timestamp"),
+            map(tag("blob"), |_| SimpleTypeName::Blob),
+            map(tag("boolean"), |_| SimpleTypeName::Boolean),
+            map(tag("document"), |_| SimpleTypeName::Document),
+            map(tag("string"), |_| SimpleTypeName::String),
+            map(tag("byte"), |_| SimpleTypeName::Byte),
+            map(tag("short"), |_| SimpleTypeName::Short),
+            map(tag("integer"), |_| SimpleTypeName::Integer),
+            map(tag("long"), |_| SimpleTypeName::Long),
+            map(tag("float"), |_| SimpleTypeName::Float),
+            map(tag("double"), |_| SimpleTypeName::Double),
+            map(tag("bigInteger"), |_| SimpleTypeName::BigInteger),
+            map(tag("bigDecimal"), |_| SimpleTypeName::BigDecimal),
+            map(tag("timestamp"), |_| SimpleTypeName::Timestamp),
         ))(input)
     }
 
@@ -614,8 +661,11 @@ pub mod shapes {
     }
 
     /// EnumTypeName = %s"enum" / %s"intEnum"
-    pub fn enum_type_name(input: &str) -> IResult<&str, &str> {
-        alt((tag("enum"), tag("intEnum")))(input)
+    pub fn enum_type_name(input: &str) -> IResult<&str, EnumTypeName> {
+        alt((
+            map(tag("enum"), |_| EnumTypeName::Enum),
+            map(tag("intEnum"), |_| EnumTypeName::IntEnum),
+        ))(input)
     }
 
     /// EnumShapeMembers = "{" [WS] 1*(EnumShapeMember [WS]) "}"
@@ -671,8 +721,13 @@ pub mod shapes {
     }
 
     /// AggregateTypeName = %s"list" / %s"map" / %s"union" / %s"structure"
-    pub fn aggregate_shape_name(input: &str) -> IResult<&str, &str> {
-        alt((tag("list"), tag("map"), tag("union"), tag("structure")))(input)
+    pub fn aggregate_shape_name(input: &str) -> IResult<&str, AggregateTypeName> {
+        alt((
+            map(tag("list"), |_| AggregateTypeName::List),
+            map(tag("map"), |_| AggregateTypeName::Map),
+            map(tag("union"), |_| AggregateTypeName::Union),
+            map(tag("structure"), |_| AggregateTypeName::Structure),
+        ))(input)
     }
 
     /// ForResource = SP %s"for" SP ShapeId
@@ -743,8 +798,11 @@ pub mod shapes {
     }
 
     /// EntityTypeName = %s"service" / %s"resource"
-    pub fn entity_type_name(input: &str) -> IResult<&str, &str> {
-        alt((tag("service"), tag("resource")))(input)
+    pub fn entity_type_name(input: &str) -> IResult<&str, EntityTypeName> {
+        alt((
+            map(tag("service"), |_| EntityTypeName::Service),
+            map(tag("resource"), |_| EntityTypeName::Resource),
+        ))(input)
     }
 
     /// OperationShape = %s"operation" SP Identifier [Mixins] [WS] OperationBody
@@ -984,7 +1042,7 @@ mod test {
     mod simple_shape {
         use crate::{
             node_values::{NodeKeyValuePair, NodeValue},
-            shapes::{ShapeOrApply, SimpleShape, shape_section},
+            shapes::{ShapeOrApply, SimpleShape, SimpleTypeName, shape_section},
             traits::{Trait, TraitBody},
         };
 
@@ -1001,7 +1059,7 @@ mod test {
                     shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
                         traits: vec![],
                         shape: crate::shapes::Shape::Simple(SimpleShape {
-                            type_name: "string",
+                            type_name: SimpleTypeName::String,
                             identifier: "MyString",
                             mixins: vec![]
                         })
@@ -1024,7 +1082,7 @@ mod test {
                     shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
                         traits: vec![],
                         shape: crate::shapes::Shape::Simple(SimpleShape {
-                            type_name: "string",
+                            type_name: SimpleTypeName::String,
                             identifier: "MyString",
                             mixins: vec!["IdBearer"]
                         })
@@ -1047,7 +1105,7 @@ mod test {
                     shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
                         traits: vec![],
                         shape: crate::shapes::Shape::Simple(SimpleShape {
-                            type_name: "string",
+                            type_name: SimpleTypeName::String,
                             identifier: "MyString",
                             mixins: vec!["IdBearer", "Abc"]
                         })
@@ -1073,7 +1131,7 @@ mod test {
                             body: None,
                         }],
                         shape: crate::shapes::Shape::Simple(SimpleShape {
-                            type_name: "string",
+                            type_name: SimpleTypeName::String,
                             identifier: "MyString",
                             mixins: vec![]
                         })
@@ -1107,7 +1165,7 @@ mod test {
                             ])),
                         }],
                         shape: crate::shapes::Shape::Simple(SimpleShape {
-                            type_name: "string",
+                            type_name: SimpleTypeName::String,
                             identifier: "MyString",
                             mixins: vec![]
                         })
@@ -1133,7 +1191,7 @@ mod test {
                             body: Some(TraitBody::Node(NodeValue::Number("123"))),
                         }],
                         shape: crate::shapes::Shape::Simple(SimpleShape {
-                            type_name: "string",
+                            type_name: SimpleTypeName::String,
                             identifier: "MyString",
                             mixins: vec![]
                         })
@@ -1166,7 +1224,7 @@ mod test {
                             }
                         ],
                         shape: crate::shapes::Shape::Simple(SimpleShape {
-                            type_name: "string",
+                            type_name: SimpleTypeName::String,
                             identifier: "MyString",
                             mixins: vec![]
                         })
@@ -1180,7 +1238,8 @@ mod test {
         use crate::{
             node_values::NodeValue,
             shapes::{
-                EnumShape, EnumShapeMember, Shape, ShapeOrApply, ShapeWithTraits, shape_section,
+                EnumShape, EnumShapeMember, EnumTypeName, Shape, ShapeOrApply, ShapeWithTraits,
+                shape_section,
             },
             traits::Trait,
         };
@@ -1208,7 +1267,7 @@ enum Suit {
                     shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
                         traits: vec![],
                         shape: Shape::Enum(EnumShape {
-                            type_name: "enum",
+                            type_name: EnumTypeName::Enum,
                             identifier: "Suit",
                             mixins: vec![],
                             members: vec![
@@ -1264,7 +1323,7 @@ enum Suit {
                     shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
                         traits: vec![],
                         shape: Shape::Enum(EnumShape {
-                            type_name: "enum",
+                            type_name: EnumTypeName::Enum,
                             identifier: "Suit",
                             mixins: vec![],
                             members: vec![
@@ -1377,8 +1436,8 @@ enum Suit {
 
     mod aggregate {
         use crate::shapes::{
-            AggregateShape, Shape, ShapeMember, ShapeOrApply, ShapeSection, ShapeWithTraits,
-            shape_section,
+            AggregateShape, AggregateTypeName, Shape, ShapeMember, ShapeOrApply, ShapeSection,
+            ShapeWithTraits, shape_section,
         };
 
         #[test]
@@ -1403,7 +1462,7 @@ structure MyStructure for Test {
                     shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
                         traits: vec![],
                         shape: Shape::Aggregate(AggregateShape {
-                            type_name: "structure",
+                            type_name: AggregateTypeName::Structure,
                             identifier: "MyStructure",
                             for_resource: Some("Test"),
                             mixins: vec![],
@@ -1438,7 +1497,8 @@ structure MyStructure for Test {
         use crate::{
             node_values::{NodeKeyValuePair, NodeValue},
             shapes::{
-                EntityShape, Shape, ShapeOrApply, ShapeSection, ShapeWithTraits, shape_section,
+                EntityShape, EntityTypeName, Shape, ShapeOrApply, ShapeSection, ShapeWithTraits,
+                shape_section,
             },
         };
 
@@ -1464,7 +1524,7 @@ service ModelRepository {
                     shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
                         traits: vec![],
                         shape: Shape::Entity(EntityShape {
-                            type_name: "service",
+                            type_name: EntityTypeName::Service,
                             identifier: "ModelRepository",
                             mixins: vec![],
                             nodes: vec![
