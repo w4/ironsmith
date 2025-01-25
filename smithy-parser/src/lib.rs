@@ -397,6 +397,7 @@ pub mod shapes {
         Enum(EnumShape<'a>),
         Aggregate(AggregateShape<'a>),
         Entity(EntityShape<'a>),
+        Operation(OperationShape<'a>),
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -444,6 +445,34 @@ pub mod shapes {
         pub identifier: &'a str,
         pub mixins: Vec<&'a str>,
         pub nodes: Vec<NodeKeyValuePair<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct OperationShape<'a> {
+        pub identifier: &'a str,
+        pub mixins: Vec<&'a str>,
+        pub body: Vec<OperationProperty<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub enum OperationProperty<'a> {
+        Input(OperationPropertyShape<'a>),
+        Output(OperationPropertyShape<'a>),
+        Errors(Vec<&'a str>),
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub enum OperationPropertyShape<'a> {
+        Explicit(&'a str),
+        Inline(InlineAggregateShape<'a>),
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct InlineAggregateShape<'a> {
+        pub traits: Vec<Trait<'a>>,
+        pub for_resource: Option<&'a str>,
+        pub mixins: Vec<&'a str>,
+        pub members: Vec<ShapeMember<'a>>,
     }
 
     /// ShapeSection = [NamespaceStatement UseSection [ShapeStatements]]
@@ -508,7 +537,7 @@ pub mod shapes {
             map(enum_shape, Shape::Enum),
             map(aggregate_shape, Shape::Aggregate),
             map(entity_shape, Shape::Entity),
-            // operation_shape,
+            map(operation_shape, Shape::Operation),
         ))(input)
     }
 
@@ -716,6 +745,102 @@ pub mod shapes {
     /// EntityTypeName = %s"service" / %s"resource"
     pub fn entity_type_name(input: &str) -> IResult<&str, &str> {
         alt((tag("service"), tag("resource")))(input)
+    }
+
+    /// OperationShape = %s"operation" SP Identifier [Mixins] [WS] OperationBody
+    pub fn operation_shape(input: &str) -> IResult<&str, OperationShape<'_>> {
+        map(
+            preceded(
+                tag("operation"),
+                cut(tuple((
+                    preceded(space1, identifier),
+                    opt(mixins),
+                    preceded(opt(ws), operation_body),
+                ))),
+            ),
+            |(identifier, mixins, body)| OperationShape {
+                identifier,
+                mixins: mixins.unwrap_or_default(),
+                body,
+            },
+        )(input)
+    }
+
+    /// OperationBody = "{" [WS] *(OperationProperty [WS]) "}"
+    pub fn operation_body(input: &str) -> IResult<&str, Vec<OperationProperty<'_>>> {
+        delimited(
+            tuple((char('{'), opt(ws))),
+            separated_list0(ws, operation_property),
+            tuple((opt(ws), char('}'))),
+        )(input)
+    }
+
+    /// OperationProperty = OperationInput / OperationOutput / OperationErrors
+    pub fn operation_property(input: &str) -> IResult<&str, OperationProperty<'_>> {
+        alt((
+            map(operation_input, OperationProperty::Input),
+            map(operation_output, OperationProperty::Output),
+            map(operation_errors, OperationProperty::Errors),
+        ))(input)
+    }
+
+    /// OperationInput = %s"input" [WS] (InlineAggregateShape / (":" [WS] ShapeId))
+    pub fn operation_input(input: &str) -> IResult<&str, OperationPropertyShape<'_>> {
+        preceded(tuple((tag("input"), opt(ws))), inline_or_explicit_shape)(input)
+    }
+
+    /// OperationOutput = %s"output" [WS] (InlineAggregateShape / (":" [WS] ShapeId))
+    pub fn operation_output(input: &str) -> IResult<&str, OperationPropertyShape<'_>> {
+        preceded(tuple((tag("output"), opt(ws))), inline_or_explicit_shape)(input)
+    }
+
+    /// OperationErrors = %s"errors" [WS] ":" [WS] "[" [WS] *(ShapeId [WS]) "]"
+    pub fn operation_errors(input: &str) -> IResult<&str, Vec<&str>> {
+        preceded(
+            tuple((tag("errors"), opt(ws))),
+            cut(preceded(
+                tuple((char(':'), opt(ws))),
+                delimited(
+                    tuple((char('['), opt(ws))),
+                    separated_list0(ws, shape_id),
+                    tuple((opt(ws), char(']'))),
+                ),
+            )),
+        )(input)
+    }
+
+    pub fn inline_or_explicit_shape(input: &str) -> IResult<&str, OperationPropertyShape<'_>> {
+        alt((
+            map(inline_aggregate_shape, OperationPropertyShape::Inline),
+            map(
+                preceded(tag(":"), cut(preceded(opt(ws), shape_id))),
+                OperationPropertyShape::Explicit,
+            ),
+        ))(input)
+    }
+
+    /// InlineAggregateShape = ":=" [WS] TraitStatements [ForResource] [Mixins] [WS] ShapeMembers
+    pub fn inline_aggregate_shape(input: &str) -> IResult<&str, InlineAggregateShape<'_>> {
+        map(
+            preceded(
+                tag(":="),
+                cut(preceded(
+                    opt(ws),
+                    tuple((
+                        trait_statements,
+                        opt(for_resource),
+                        opt(mixins),
+                        preceded(opt(ws), shape_members),
+                    )),
+                )),
+            ),
+            |(traits, for_resource, mixins, members)| InlineAggregateShape {
+                traits,
+                for_resource,
+                mixins: mixins.unwrap_or_default(),
+                members,
+            },
+        )(input)
     }
 }
 
@@ -1359,6 +1484,76 @@ service ModelRepository {
                         },),
                     },),],
                 },)
+            );
+        }
+    }
+
+    mod operation {
+        use crate::shapes::{
+            InlineAggregateShape, OperationProperty, OperationPropertyShape, OperationShape, Shape,
+            ShapeMember, ShapeOrApply, ShapeSection, ShapeWithTraits, shape_section,
+        };
+
+        #[test]
+        fn smoke() {
+            let (remaining, res) = shape_section(
+                r#"namespace smithy.example
+
+operation PingService {
+    input: PingServiceInput,
+    output := {
+        username: String
+        userId: String
+    }
+    errors: [UnavailableError, BadRequestError]
+}"#,
+            )
+            .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(ShapeSection {
+                    namespace: "smithy.example",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
+                        traits: vec![],
+                        shape: Shape::Operation(OperationShape {
+                            identifier: "PingService",
+                            mixins: vec![],
+                            body: vec![
+                                OperationProperty::Input(OperationPropertyShape::Explicit(
+                                    "PingServiceInput",
+                                )),
+                                OperationProperty::Output(OperationPropertyShape::Inline(
+                                    InlineAggregateShape {
+                                        traits: vec![],
+                                        for_resource: None,
+                                        mixins: vec![],
+                                        members: vec![
+                                            ShapeMember {
+                                                traits: vec![],
+                                                identifier: "username",
+                                                shape_id: Some("String"),
+                                                value: None,
+                                            },
+                                            ShapeMember {
+                                                traits: vec![],
+                                                identifier: "userId",
+                                                shape_id: Some("String"),
+                                                value: None,
+                                            }
+                                        ]
+                                    }
+                                )),
+                                OperationProperty::Errors(vec![
+                                    "UnavailableError",
+                                    "BadRequestError"
+                                ]),
+                            ],
+                        }),
+                    })],
+                })
             );
         }
     }
