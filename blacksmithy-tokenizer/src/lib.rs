@@ -1,17 +1,16 @@
-// use nom::{
-//     IResult,
-//     combinator::{all_consuming, opt},
-//     sequence::{preceded, tuple},
-// };
-// use whitespace::ws;
+use nom::{
+    combinator::{all_consuming, opt},
+    sequence::{preceded, tuple},
+};
+use whitespace::ws;
 
-// pub fn parse_idl(input: &str) {
-//     let (control, metadata) = all_consuming(preceded(
-//         opt(ws),
-//         tuple((control::control_section, metadata::metadata_section)),
-//     ))(input)
-//     .unwrap();
-// }
+pub fn parse_idl(input: &str) {
+    let (_, (_control, _metadata)) = all_consuming(preceded(
+        opt(ws),
+        tuple((control::control_section, metadata::metadata_section)),
+    ))(input)
+    .unwrap();
+}
 
 pub mod comment {
     use nom::{
@@ -354,6 +353,344 @@ pub mod shape_id {
     }
 }
 
+pub mod shapes {
+    use nom::{
+        IResult,
+        branch::alt,
+        bytes::complete::tag,
+        character::complete::{char, space0, space1},
+        combinator::{cut, map, opt},
+        multi::{many0, separated_list0, separated_list1},
+        sequence::{delimited, preceded, tuple},
+    };
+
+    use crate::{
+        node_values::{NodeValue, node_value},
+        shape_id::{absolute_root_shape_id, identifier, namespace, shape_id},
+        traits::{ApplyStatement, Trait, apply_statement, trait_statements},
+        whitespace::{br, comma, ws},
+    };
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct ShapeSection<'a> {
+        pub namespace: &'a str,
+        pub uses: Vec<&'a str>,
+        pub shapes: Vec<ShapeOrApply<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub enum ShapeOrApply<'a> {
+        Shape(ShapeWithTraits<'a>),
+        Apply(ApplyStatement<'a>),
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct ShapeWithTraits<'a> {
+        pub traits: Vec<Trait<'a>>,
+        pub shape: Shape<'a>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub enum Shape<'a> {
+        Simple(SimpleShape<'a>),
+        Enum(EnumShape<'a>),
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct SimpleShape<'a> {
+        pub type_name: &'a str,
+        pub identifier: &'a str,
+        pub mixins: Vec<&'a str>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct EnumShape<'a> {
+        pub type_name: &'a str,
+        pub identifier: &'a str,
+        pub mixins: Vec<&'a str>,
+        pub members: Vec<EnumShapeMember<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct EnumShapeMember<'a> {
+        pub traits: Vec<Trait<'a>>,
+        pub identifier: &'a str,
+        pub value: Option<NodeValue<'a>>,
+    }
+
+    /// ShapeSection = [NamespaceStatement UseSection [ShapeStatements]]
+    pub fn shape_section(input: &str) -> IResult<&str, Option<ShapeSection<'_>>> {
+        opt(map(
+            tuple((namespace_statement, use_section, shape_statements)),
+            |(namespace, uses, shapes)| ShapeSection {
+                namespace,
+                uses,
+                shapes,
+            },
+        ))(input)
+    }
+
+    /// NamespaceStatement = %s"namespace" SP Namespace BR
+    pub fn namespace_statement(input: &str) -> IResult<&str, &str> {
+        preceded(tag("namespace"), cut(delimited(space1, namespace, br)))(input)
+    }
+
+    /// UseSection = *(UseStatement)
+    pub fn use_section(input: &str) -> IResult<&str, Vec<&str>> {
+        many0(use_statement)(input)
+    }
+
+    /// UseStatement = %s"use" SP AbsoluteRootShapeId BR
+    pub fn use_statement(input: &str) -> IResult<&str, &str> {
+        preceded(
+            tag("use"),
+            cut(delimited(space1, absolute_root_shape_id, br)),
+        )(input)
+    }
+
+    /// ShapeOrApplyStatement *(BR ShapeOrApplyStatement)
+    pub fn shape_statements(input: &str) -> IResult<&str, Vec<ShapeOrApply<'_>>> {
+        separated_list0(br, shape_or_apply_statement)(input)
+    }
+
+    /// ShapeOrApplyStatement = ShapeStatement / ApplyStatement
+    pub fn shape_or_apply_statement(input: &str) -> IResult<&str, ShapeOrApply<'_>> {
+        alt((
+            map(shape_statement, ShapeOrApply::Shape),
+            map(apply_statement, ShapeOrApply::Apply),
+        ))(input)
+    }
+
+    /// ShapeStatement = TraitStatements Shape
+    pub fn shape_statement(input: &str) -> IResult<&str, ShapeWithTraits<'_>> {
+        map(tuple((trait_statements, shape)), |(traits, shape)| {
+            ShapeWithTraits { traits, shape }
+        })(input)
+    }
+
+    /// Shape =
+    ///     SimpleShape
+    ///   / EnumShape
+    ///   / AggregateShape
+    ///   / EntityShape
+    ///   / OperationShape
+    pub fn shape(input: &str) -> IResult<&str, Shape<'_>> {
+        alt((
+            map(simple_shape, Shape::Simple),
+            map(enum_shape, Shape::Enum),
+            // aggregate_shape,
+            // entity_shape,
+            // operation_shape,
+        ))(input)
+    }
+
+    /// SimpleShape = SimpleTypeName SP Identifier [Mixins]
+    pub fn simple_shape(input: &str) -> IResult<&str, SimpleShape<'_>> {
+        map(
+            tuple((
+                simple_type_name,
+                cut(preceded(space1, identifier)),
+                opt(mixins),
+            )),
+            |(type_name, identifier, mixins)| SimpleShape {
+                type_name,
+                identifier,
+                mixins: mixins.unwrap_or_default(),
+            },
+        )(input)
+    }
+
+    /// SimpleTypeName =
+    ///   %s"blob" / %s"boolean" / %s"document" / %s"string"
+    /// / %s"byte" / %s"short" / %s"integer" / %s"long"
+    /// / %s"float" / %s"double" / %s"bigInteger"
+    /// / %s"bigDecimal" / %s"timestamp"
+    pub fn simple_type_name(input: &str) -> IResult<&str, &str> {
+        alt((
+            tag("blob"),
+            tag("boolean"),
+            tag("document"),
+            tag("string"),
+            tag("byte"),
+            tag("short"),
+            tag("short"),
+            tag("integer"),
+            tag("long"),
+            tag("float"),
+            tag("double"),
+            tag("bigInteger"),
+            tag("bigDecimal"),
+            tag("timestamp"),
+        ))(input)
+    }
+
+    /// Mixins = [SP] %s"with" [WS] "[" [WS] 1*(ShapeId [WS]) "]"
+    pub fn mixins(input: &str) -> IResult<&str, Vec<&str>> {
+        preceded(
+            space0,
+            preceded(
+                tag("with"),
+                cut(preceded(
+                    opt(ws),
+                    delimited(char('['), separated_list1(ws, shape_id), char(']')),
+                )),
+            ),
+        )(input)
+    }
+
+    /// EnumShape = EnumTypeName SP Identifier [Mixins] [WS] EnumShapeMembers
+    pub fn enum_shape(input: &str) -> IResult<&str, EnumShape<'_>> {
+        map(
+            tuple((
+                enum_type_name,
+                cut(preceded(space1, identifier)),
+                opt(mixins),
+                cut(preceded(opt(ws), enum_shape_members)),
+            )),
+            |(type_name, identifier, mixins, members)| EnumShape {
+                type_name,
+                identifier,
+                mixins: mixins.unwrap_or_default(),
+                members,
+            },
+        )(input)
+    }
+
+    /// EnumTypeName = %s"enum" / %s"intEnum"
+    pub fn enum_type_name(input: &str) -> IResult<&str, &str> {
+        alt((tag("enum"), tag("intEnum")))(input)
+    }
+
+    /// EnumShapeMembers = "{" [WS] 1*(EnumShapeMember [WS]) "}"
+    pub fn enum_shape_members(input: &str) -> IResult<&str, Vec<EnumShapeMember<'_>>> {
+        delimited(
+            char('{'),
+            delimited(opt(ws), separated_list0(ws, enum_shape_member), opt(ws)),
+            char('}'),
+        )(input)
+    }
+
+    /// EnumShapeMember = TraitStatements Identifier [ValueAssignment]
+    pub fn enum_shape_member(input: &str) -> IResult<&str, EnumShapeMember<'_>> {
+        map(
+            tuple((trait_statements, identifier, opt(value_assignment))),
+            |(traits, identifier, value)| EnumShapeMember {
+                traits,
+                identifier,
+                value,
+            },
+        )(input)
+    }
+
+    /// ValueAssignment = [SP] "=" [SP] NodeValue [SP] [Comma] BR
+    pub fn value_assignment(input: &str) -> IResult<&str, NodeValue<'_>> {
+        delimited(
+            tuple((space0, char('='), space0)),
+            node_value,
+            opt(tuple((space0, comma))),
+        )(input)
+    }
+}
+
+pub mod traits {
+    use nom::{
+        IResult,
+        branch::alt,
+        bytes::complete::tag,
+        character::complete::{char, space1},
+        combinator::{cut, map, opt},
+        multi::{separated_list0, separated_list1},
+        sequence::{delimited, preceded, terminated, tuple},
+    };
+
+    use crate::{
+        node_values::{NodeKeyValuePair, NodeValue, node_object_kvp, node_value},
+        shape_id::shape_id,
+        whitespace::ws,
+    };
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct Trait<'a> {
+        pub shape_id: &'a str,
+        pub body: Option<TraitBody<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub enum TraitBody<'a> {
+        Structure(Vec<NodeKeyValuePair<'a>>),
+        Node(NodeValue<'a>),
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct ApplyStatement<'a> {
+        pub shape_id: &'a str,
+        pub traits: Vec<Trait<'a>>,
+    }
+
+    /// TraitStatements = *(Trait [WS])
+    pub fn trait_statements(input: &str) -> IResult<&str, Vec<Trait<'_>>> {
+        terminated(separated_list0(ws, trait_), opt(ws))(input)
+    }
+
+    /// Trait = "@" ShapeId [TraitBody]
+    pub fn trait_(input: &str) -> IResult<&str, Trait<'_>> {
+        map(
+            preceded(char('@'), cut(tuple((shape_id, opt(trait_body))))),
+            |(shape_id, body)| Trait {
+                shape_id,
+                body: body.flatten(),
+            },
+        )(input)
+    }
+
+    /// TraitBody = "(" [WS] [TraitStructure / TraitNode] ")"
+    pub fn trait_body(input: &str) -> IResult<&str, Option<TraitBody<'_>>> {
+        preceded(
+            char('('),
+            cut(terminated(
+                preceded(
+                    opt(ws),
+                    opt(alt((
+                        map(trait_structure, TraitBody::Structure),
+                        map(trait_node, TraitBody::Node),
+                    ))),
+                ),
+                char(')'),
+            )),
+        )(input)
+    }
+
+    /// TraitStructure = 1*(NodeObjectKvp [WS])
+    pub fn trait_structure(input: &str) -> IResult<&str, Vec<NodeKeyValuePair<'_>>> {
+        separated_list1(ws, node_object_kvp)(input)
+    }
+
+    /// TraitNode = NodeValue [WS]
+    pub fn trait_node(input: &str) -> IResult<&str, NodeValue<'_>> {
+        terminated(node_value, opt(ws))(input)
+    }
+
+    /// ApplyStatement = ApplyStatementSingular / ApplyStatementBlock
+    /// ApplyStatementSingular = %s"apply" SP ShapeId WS Trait
+    /// ApplyStatementBlock = %s"apply" SP ShapeId WS "{" [WS] TraitStatements "}"
+    pub fn apply_statement(input: &str) -> IResult<&str, ApplyStatement<'_>> {
+        let apply_statement_singular = map(trait_, |v| vec![v]);
+        let apply_statement_block =
+            delimited(char('{'), preceded(opt(ws), trait_statements), char('}'));
+
+        map(
+            preceded(
+                tag("apply"),
+                cut(tuple((
+                    delimited(space1, shape_id, ws),
+                    alt((apply_statement_singular, apply_statement_block)),
+                ))),
+            ),
+            |(shape_id, traits)| ApplyStatement { shape_id, traits },
+        )(input)
+    }
+}
+
 #[cfg(test)]
 mod test {
     mod control_section {
@@ -389,6 +726,400 @@ mod test {
                 ),
                 ("qux", NodeValue::String("test")),
             ]);
+        }
+    }
+
+    mod simple_shape {
+        use crate::{
+            node_values::{NodeKeyValuePair, NodeValue},
+            shapes::{ShapeOrApply, SimpleShape, shape_section},
+            traits::{Trait, TraitBody},
+        };
+
+        #[test]
+        fn smoke() {
+            let (remaining, res) = shape_section("namespace com.foo // This is also a comment\n\n// Another comment\nstring MyString").unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
+                        traits: vec![],
+                        shape: crate::shapes::Shape::Simple(SimpleShape {
+                            type_name: "string",
+                            identifier: "MyString",
+                            mixins: vec![]
+                        })
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn with_mixin() {
+            let (remaining, res) =
+                shape_section("namespace com.foo\n\nstring MyString with [IdBearer]").unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
+                        traits: vec![],
+                        shape: crate::shapes::Shape::Simple(SimpleShape {
+                            type_name: "string",
+                            identifier: "MyString",
+                            mixins: vec!["IdBearer"]
+                        })
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn with_multiple_mixins() {
+            let (remaining, res) =
+                shape_section("namespace com.foo\n\nstring MyString with [IdBearer, Abc]").unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
+                        traits: vec![],
+                        shape: crate::shapes::Shape::Simple(SimpleShape {
+                            type_name: "string",
+                            identifier: "MyString",
+                            mixins: vec!["IdBearer", "Abc"]
+                        })
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn with_simple_trait() {
+            let (remaining, res) =
+                shape_section("namespace com.foo\n\n@myTrait\nstring MyString").unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
+                        traits: vec![Trait {
+                            shape_id: "myTrait",
+                            body: None,
+                        }],
+                        shape: crate::shapes::Shape::Simple(SimpleShape {
+                            type_name: "string",
+                            identifier: "MyString",
+                            mixins: vec![]
+                        })
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn with_kv_trait() {
+            let (remaining, res) = shape_section("namespace com.foo \n\n@myTrait(key: \"value\", otherKey: \"otherValue\")\nstring MyString").unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
+                        traits: vec![Trait {
+                            shape_id: "myTrait",
+                            body: Some(TraitBody::Structure(vec![
+                                NodeKeyValuePair {
+                                    key: "key",
+                                    value: NodeValue::String("value"),
+                                },
+                                NodeKeyValuePair {
+                                    key: "otherKey",
+                                    value: NodeValue::String("otherValue"),
+                                }
+                            ])),
+                        }],
+                        shape: crate::shapes::Shape::Simple(SimpleShape {
+                            type_name: "string",
+                            identifier: "MyString",
+                            mixins: vec![]
+                        })
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn with_node_trait() {
+            let (remaining, res) =
+                shape_section("namespace com.foo\n@myTrait(123)\nstring MyString").unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
+                        traits: vec![Trait {
+                            shape_id: "myTrait",
+                            body: Some(TraitBody::Node(NodeValue::Number("123"))),
+                        }],
+                        shape: crate::shapes::Shape::Simple(SimpleShape {
+                            type_name: "string",
+                            identifier: "MyString",
+                            mixins: vec![]
+                        })
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn with_multiple_traits() {
+            let (remaining, res) =
+                shape_section("namespace com.foo\n@myTrait\n@myOtherTrait\nstring MyString")
+                    .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(crate::shapes::ShapeWithTraits {
+                        traits: vec![
+                            Trait {
+                                shape_id: "myTrait",
+                                body: None,
+                            },
+                            Trait {
+                                shape_id: "myOtherTrait",
+                                body: None,
+                            }
+                        ],
+                        shape: crate::shapes::Shape::Simple(SimpleShape {
+                            type_name: "string",
+                            identifier: "MyString",
+                            mixins: vec![]
+                        })
+                    })]
+                })
+            );
+        }
+    }
+
+    mod enum_shape {
+        use crate::{
+            node_values::NodeValue,
+            shapes::{
+                EnumShape, EnumShapeMember, Shape, ShapeOrApply, ShapeWithTraits, shape_section,
+            },
+            traits::Trait,
+        };
+
+        #[test]
+        fn simple() {
+            let (remaining, res) = shape_section(
+                r#"namespace smithy.example
+
+enum Suit {
+    DIAMOND
+    CLUB
+    HEART
+    SPADE
+}"#,
+            )
+            .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "smithy.example",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
+                        traits: vec![],
+                        shape: Shape::Enum(EnumShape {
+                            type_name: "enum",
+                            identifier: "Suit",
+                            mixins: vec![],
+                            members: vec![
+                                EnumShapeMember {
+                                    traits: vec![],
+                                    identifier: "DIAMOND",
+                                    value: None,
+                                },
+                                EnumShapeMember {
+                                    traits: vec![],
+                                    identifier: "CLUB",
+                                    value: None,
+                                },
+                                EnumShapeMember {
+                                    traits: vec![],
+                                    identifier: "HEART",
+                                    value: None,
+                                },
+                                EnumShapeMember {
+                                    traits: vec![],
+                                    identifier: "SPADE",
+                                    value: None,
+                                },
+                            ]
+                        })
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn with_value() {
+            let (remaining, res) = shape_section(
+                r#"namespace smithy.example
+
+enum Suit {
+    @deprecated
+    DIAMOND = "diamond"
+
+    CLUB = "club" HEART = "heart"
+    @deprecated
+    SPADE = "spade"
+}"#,
+            )
+            .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "smithy.example",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
+                        traits: vec![],
+                        shape: Shape::Enum(EnumShape {
+                            type_name: "enum",
+                            identifier: "Suit",
+                            mixins: vec![],
+                            members: vec![
+                                EnumShapeMember {
+                                    traits: vec![Trait {
+                                        shape_id: "deprecated",
+                                        body: None,
+                                    }],
+                                    identifier: "DIAMOND",
+                                    value: Some(NodeValue::String("diamond")),
+                                },
+                                EnumShapeMember {
+                                    traits: vec![],
+                                    identifier: "CLUB",
+                                    value: Some(NodeValue::String("club")),
+                                },
+                                EnumShapeMember {
+                                    traits: vec![],
+                                    identifier: "HEART",
+                                    value: Some(NodeValue::String("heart")),
+                                },
+                                EnumShapeMember {
+                                    traits: vec![Trait {
+                                        shape_id: "deprecated",
+                                        body: None,
+                                    }],
+                                    identifier: "SPADE",
+                                    value: Some(NodeValue::String("spade")),
+                                },
+                            ]
+                        })
+                    })]
+                })
+            );
+        }
+    }
+
+    mod apply_statement {
+        use crate::{
+            node_values::{NodeKeyValuePair, NodeValue},
+            shapes::{ShapeOrApply, shape_section},
+            traits::{Trait, TraitBody},
+        };
+
+        #[test]
+        fn single() {
+            let (remaining, res) = shape_section(
+                "namespace com.foo\napply MyString @documentation(\"This is my string!\")",
+            )
+            .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Apply(crate::traits::ApplyStatement {
+                        shape_id: "MyString",
+                        traits: vec![Trait {
+                            shape_id: "documentation",
+                            body: Some(TraitBody::Node(NodeValue::String("This is my string!"))),
+                        }],
+                    })]
+                })
+            );
+        }
+
+        #[test]
+        fn multiple() {
+            let (remaining, res) = shape_section(
+                "namespace com.foo\napply MyString {\n    @documentation(\"This is my string!\")\n    @length(min: 1, max: 10)\n}",
+            )
+            .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(crate::shapes::ShapeSection {
+                    namespace: "com.foo",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Apply(crate::traits::ApplyStatement {
+                        shape_id: "MyString",
+                        traits: vec![
+                            Trait {
+                                shape_id: "documentation",
+                                body: Some(TraitBody::Node(NodeValue::String(
+                                    "This is my string!"
+                                ))),
+                            },
+                            Trait {
+                                shape_id: "length",
+                                body: Some(TraitBody::Structure(vec![
+                                    NodeKeyValuePair {
+                                        key: "min",
+                                        value: NodeValue::Number("1")
+                                    },
+                                    NodeKeyValuePair {
+                                        key: "max",
+                                        value: NodeValue::Number("10"),
+                                    },
+                                ])),
+                            }
+                        ],
+                    })]
+                })
+            );
         }
     }
 }
