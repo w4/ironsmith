@@ -3,9 +3,9 @@
 
 use node_values::NodeValue;
 use nom::{
-    IResult,
     combinator::{all_consuming, opt},
     sequence::{delimited, tuple},
+    IResult,
 };
 use shapes::ShapeSection;
 use whitespace::ws;
@@ -34,21 +34,24 @@ pub fn parse_ast(input: &str) -> IResult<&str, Ast<'_>> {
         opt(ws),
     ))(input)?;
 
-    Ok((rest, Ast {
-        control,
-        metadata,
-        shapes,
-    }))
+    Ok((
+        rest,
+        Ast {
+            control,
+            metadata,
+            shapes,
+        },
+    ))
 }
 
 pub mod comment {
     use nom::{
-        IResult,
         branch::alt,
         bytes::complete::tag,
         character::complete::{line_ending, not_line_ending},
         combinator::{map, opt},
         sequence::delimited,
+        IResult,
     };
 
     /// ```text
@@ -78,12 +81,12 @@ pub mod comment {
 
 pub mod whitespace {
     use nom::{
-        IResult,
         branch::alt,
         character::complete::{char, line_ending, multispace1, space0},
         combinator::{opt, recognize},
         multi::many1,
         sequence::delimited,
+        IResult,
     };
 
     /// ```text
@@ -114,15 +117,15 @@ pub mod whitespace {
 
 pub mod control {
     use nom::{
-        IResult,
         character::complete::{char, space0},
         combinator::cut,
         multi::many0,
         sequence::{delimited, preceded, separated_pair, terminated},
+        IResult,
     };
 
     use crate::{
-        node_values::{NodeValue, node_object_key, node_value},
+        node_values::{node_object_key, node_value, NodeValue},
         whitespace::br,
     };
 
@@ -153,16 +156,16 @@ pub mod control {
 
 pub mod metadata {
     use nom::{
-        IResult,
         bytes::complete::tag,
         character::complete::{char, space0, space1},
         combinator::cut,
         multi::many0,
         sequence::{delimited, preceded, separated_pair, terminated, tuple},
+        IResult,
     };
 
     use crate::{
-        node_values::{NodeValue, node_object_key, node_value},
+        node_values::{node_object_key, node_value, NodeValue},
         whitespace::br,
     };
 
@@ -193,7 +196,6 @@ pub mod metadata {
 
 pub mod node_values {
     use nom::{
-        IResult,
         branch::alt,
         bytes::complete::{tag, take_while_m_n},
         character::complete::{char, line_ending, one_of, space0},
@@ -201,6 +203,7 @@ pub mod node_values {
         multi::{many0, many1, separated_list0},
         number::complete::recognize_float,
         sequence::{delimited, preceded, separated_pair, terminated, tuple},
+        IResult,
     };
 
     use crate::{
@@ -390,13 +393,13 @@ pub mod node_values {
 
 pub mod shape_id {
     use nom::{
-        IResult,
         branch::alt,
         bytes::complete::{take_while, take_while1},
         character::complete::{alpha1, alphanumeric1, char},
         combinator::{opt, recognize},
         multi::separated_list1,
         sequence::{preceded, separated_pair, tuple},
+        IResult,
     };
 
     /// ```text
@@ -459,19 +462,19 @@ pub mod shape_id {
 
 pub mod shapes {
     use nom::{
-        IResult,
         branch::alt,
         bytes::complete::tag,
         character::complete::{char, space0, space1},
         combinator::{cut, map, opt},
         multi::{many0, separated_list0, separated_list1},
         sequence::{delimited, preceded, separated_pair, tuple},
+        IResult,
     };
 
     use crate::{
-        node_values::{NodeKeyValuePair, NodeValue, node_object, node_value},
+        node_values::{node_object, node_value, NodeKeyValuePair, NodeValue},
         shape_id::{absolute_root_shape_id, identifier, namespace, shape_id},
-        traits::{ApplyStatement, Trait, apply_statement, trait_statements},
+        traits::{apply_statement, trait_statements, ApplyStatement, Trait},
         whitespace::{br, comma, ws},
     };
 
@@ -1060,17 +1063,17 @@ pub mod shapes {
 
 pub mod traits {
     use nom::{
-        IResult,
         branch::alt,
         bytes::complete::tag,
         character::complete::{char, space1},
         combinator::{cut, map, opt},
         multi::{separated_list0, separated_list1},
         sequence::{delimited, preceded, terminated, tuple},
+        IResult,
     };
 
     use crate::{
-        node_values::{NodeKeyValuePair, NodeValue, node_object_kvp, node_value},
+        node_values::{node_object_kvp, node_value, NodeKeyValuePair, NodeValue},
         shape_id::shape_id,
         whitespace::ws,
     };
@@ -1173,6 +1176,7 @@ pub mod traits {
 }
 
 #[cfg(test)]
+#[allow(clippy::needless_raw_string_hashes)]
 mod test {
     use insta::{assert_debug_snapshot, glob};
 
@@ -1188,7 +1192,7 @@ mod test {
             assert_eq!(rest, "");
 
             assert_debug_snapshot!(ast);
-        })
+        });
     }
 
     mod control_section {
@@ -1199,10 +1203,13 @@ mod test {
             let (remaining, res) = control_section("$version: \"2.0\"\n$hello: 123\n").unwrap();
 
             assert_eq!(remaining, "");
-            assert_eq!(res, &[
-                ("version", NodeValue::String("2.0")),
-                ("hello", NodeValue::Number("123")),
-            ]);
+            assert_eq!(
+                res,
+                &[
+                    ("version", NodeValue::String("2.0")),
+                    ("hello", NodeValue::Number("123")),
+                ]
+            );
         }
     }
 
@@ -1217,20 +1224,23 @@ mod test {
             .unwrap();
 
             assert_eq!(remaining, "");
-            assert_eq!(res, &[
-                (
-                    "foo",
-                    NodeValue::Array(vec![NodeValue::String("baz"), NodeValue::String("bar")])
-                ),
-                ("qux", NodeValue::String("test")),
-            ]);
+            assert_eq!(
+                res,
+                &[
+                    (
+                        "foo",
+                        NodeValue::Array(vec![NodeValue::String("baz"), NodeValue::String("bar")])
+                    ),
+                    ("qux", NodeValue::String("test")),
+                ]
+            );
         }
     }
 
     mod simple_shape {
         use crate::{
             node_values::{NodeKeyValuePair, NodeValue},
-            shapes::{ShapeOrApply, SimpleShape, SimpleTypeName, shape_section},
+            shapes::{shape_section, ShapeOrApply, SimpleShape, SimpleTypeName},
             traits::{Trait, TraitBody},
         };
 
@@ -1426,8 +1436,8 @@ mod test {
         use crate::{
             node_values::NodeValue,
             shapes::{
-                EnumShape, EnumShapeMember, EnumTypeName, Shape, ShapeOrApply, ShapeWithTraits,
-                shape_section,
+                shape_section, EnumShape, EnumShapeMember, EnumTypeName, Shape, ShapeOrApply,
+                ShapeWithTraits,
             },
             traits::Trait,
         };
@@ -1552,7 +1562,7 @@ enum Suit {
     mod apply_statement {
         use crate::{
             node_values::{NodeKeyValuePair, NodeValue},
-            shapes::{ShapeOrApply, shape_section},
+            shapes::{shape_section, ShapeOrApply},
             traits::{Trait, TraitBody},
         };
 
@@ -1624,8 +1634,8 @@ enum Suit {
 
     mod aggregate {
         use crate::shapes::{
-            AggregateShape, AggregateTypeName, Shape, ShapeMember, ShapeOrApply, ShapeSection,
-            ShapeWithTraits, shape_section,
+            shape_section, AggregateShape, AggregateTypeName, Shape, ShapeMember, ShapeOrApply,
+            ShapeSection, ShapeWithTraits,
         };
 
         #[test]
@@ -1685,8 +1695,8 @@ structure MyStructure for Test {
         use crate::{
             node_values::{NodeKeyValuePair, NodeValue},
             shapes::{
-                EntityShape, EntityTypeName, Shape, ShapeOrApply, ShapeSection, ShapeWithTraits,
-                shape_section,
+                shape_section, EntityShape, EntityTypeName, Shape, ShapeOrApply, ShapeSection,
+                ShapeWithTraits,
             },
         };
 
@@ -1738,8 +1748,8 @@ service ModelRepository {
 
     mod operation {
         use crate::shapes::{
-            InlineAggregateShape, OperationProperty, OperationPropertyShape, OperationShape, Shape,
-            ShapeMember, ShapeOrApply, ShapeSection, ShapeWithTraits, shape_section,
+            shape_section, InlineAggregateShape, OperationProperty, OperationPropertyShape,
+            OperationShape, Shape, ShapeMember, ShapeOrApply, ShapeSection, ShapeWithTraits,
         };
 
         #[test]

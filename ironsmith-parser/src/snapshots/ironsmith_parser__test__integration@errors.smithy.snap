@@ -1,7 +1,7 @@
 ---
-source: smithy-parser/src/lib.rs
+source: ironsmith-parser/src/lib.rs
 expression: ast
-input_file: smithy-parser/fixtures/errors.smithy
+input_file: ironsmith-parser/fixtures/errors.smithy
 ---
 Ast {
     control: [
