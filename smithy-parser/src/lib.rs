@@ -361,7 +361,7 @@ pub mod shapes {
         character::complete::{char, space0, space1},
         combinator::{cut, map, opt},
         multi::{many0, separated_list0, separated_list1},
-        sequence::{delimited, preceded, tuple},
+        sequence::{delimited, preceded, separated_pair, tuple},
     };
 
     use crate::{
@@ -394,6 +394,7 @@ pub mod shapes {
     pub enum Shape<'a> {
         Simple(SimpleShape<'a>),
         Enum(EnumShape<'a>),
+        Aggregate(AggregateShape<'a>),
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -415,6 +416,23 @@ pub mod shapes {
     pub struct EnumShapeMember<'a> {
         pub traits: Vec<Trait<'a>>,
         pub identifier: &'a str,
+        pub value: Option<NodeValue<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct AggregateShape<'a> {
+        pub type_name: &'a str,
+        pub identifier: &'a str,
+        pub for_resource: Option<&'a str>,
+        pub mixins: Vec<&'a str>,
+        pub members: Vec<ShapeMember<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct ShapeMember<'a> {
+        pub traits: Vec<Trait<'a>>,
+        pub identifier: &'a str,
+        pub shape_id: Option<&'a str>,
         pub value: Option<NodeValue<'a>>,
     }
 
@@ -478,7 +496,7 @@ pub mod shapes {
         alt((
             map(simple_shape, Shape::Simple),
             map(enum_shape, Shape::Enum),
-            // aggregate_shape,
+            map(aggregate_shape, Shape::Aggregate),
             // entity_shape,
             // operation_shape,
         ))(input)
@@ -589,6 +607,83 @@ pub mod shapes {
             node_value,
             opt(tuple((space0, comma))),
         )(input)
+    }
+
+    /// AggregateShape =
+    ///     AggregateTypeName SP Identifier [ForResource] [Mixins]
+    ///      [WS] ShapeMembers
+    pub fn aggregate_shape(input: &str) -> IResult<&str, AggregateShape<'_>> {
+        map(
+            tuple((
+                aggregate_shape_name,
+                cut(preceded(space1, identifier)),
+                opt(for_resource),
+                opt(mixins),
+                cut(preceded(opt(ws), shape_members)),
+            )),
+            |(type_name, identifier, for_resource, mixins, members)| AggregateShape {
+                type_name,
+                identifier,
+                for_resource,
+                mixins: mixins.unwrap_or_default(),
+                members,
+            },
+        )(input)
+    }
+
+    /// AggregateTypeName = %s"list" / %s"map" / %s"union" / %s"structure"
+    pub fn aggregate_shape_name(input: &str) -> IResult<&str, &str> {
+        alt((tag("list"), tag("map"), tag("union"), tag("structure")))(input)
+    }
+
+    /// ForResource = SP %s"for" SP ShapeId
+    pub fn for_resource(input: &str) -> IResult<&str, &str> {
+        preceded(tuple((space1, tag("for"), space1)), shape_id)(input)
+    }
+
+    /// ShapeMembers = "{" [WS] *(ShapeMember [WS]) "}"
+    pub fn shape_members(input: &str) -> IResult<&str, Vec<ShapeMember<'_>>> {
+        delimited(
+            tuple((char('{'), opt(ws))),
+            separated_list1(ws, shape_member),
+            tuple((opt(ws), char('}'))),
+        )(input)
+    }
+
+    /// ShapeMember = TraitStatements (ExplicitShapeMember / ElidedShapeMember) [ValueAssignment]
+    pub fn shape_member(input: &str) -> IResult<&str, ShapeMember<'_>> {
+        map(
+            tuple((
+                trait_statements,
+                alt((
+                    map(explicit_shape_member, |(identifier, shape_name)| {
+                        (identifier, Some(shape_name))
+                    }),
+                    map(elided_shape_member, |identifier| (identifier, None)),
+                )),
+                opt(value_assignment),
+            )),
+            |(traits, (identifier, shape_id), value)| ShapeMember {
+                traits,
+                identifier,
+                shape_id,
+                value,
+            },
+        )(input)
+    }
+
+    /// ExplicitShapeMember = Identifier [SP] ":" [SP] ShapeId
+    pub fn explicit_shape_member(input: &str) -> IResult<&str, (&str, &str)> {
+        separated_pair(
+            identifier,
+            tuple((space0, char(':'), space0)),
+            cut(shape_id),
+        )(input)
+    }
+
+    /// ElidedShapeMember = "$" Identifier
+    pub fn elided_shape_member(input: &str) -> IResult<&str, &str> {
+        preceded(char('$'), cut(identifier))(input)
     }
 }
 
@@ -1118,6 +1213,65 @@ enum Suit {
                             }
                         ],
                     })]
+                })
+            );
+        }
+    }
+
+    mod structure {
+        use crate::shapes::{
+            AggregateShape, Shape, ShapeMember, ShapeOrApply, ShapeSection, ShapeWithTraits,
+            shape_section,
+        };
+
+        #[test]
+        fn structure() {
+            let (remaining, res) = shape_section(
+                r#"namespace smithy.example
+
+structure MyStructure for Test {
+    a: MyString
+    b: smithy.example#MyString
+    $c
+}"#,
+            )
+            .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(ShapeSection {
+                    namespace: "smithy.example",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
+                        traits: vec![],
+                        shape: Shape::Aggregate(AggregateShape {
+                            type_name: "structure",
+                            identifier: "MyStructure",
+                            for_resource: Some("Test"),
+                            mixins: vec![],
+                            members: vec![
+                                ShapeMember {
+                                    traits: vec![],
+                                    identifier: "a",
+                                    shape_id: Some("MyString"),
+                                    value: None,
+                                },
+                                ShapeMember {
+                                    traits: vec![],
+                                    identifier: "b",
+                                    shape_id: Some("smithy.example#MyString"),
+                                    value: None,
+                                },
+                                ShapeMember {
+                                    traits: vec![],
+                                    identifier: "c",
+                                    shape_id: None,
+                                    value: None,
+                                },
+                            ],
+                        }),
+                    })],
                 })
             );
         }
