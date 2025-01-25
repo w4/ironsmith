@@ -126,6 +126,7 @@ pub mod metadata {
         many0(metadata_statement)(input)
     }
 
+    /// MetadataStatement = %s"metadata" SP NodeObjectKey [SP] "=" [SP] NodeValue BR
     pub fn metadata_statement(input: &str) -> IResult<&str, (&str, NodeValue<'_>)> {
         preceded(
             tuple((tag("metadata"), space1)),
@@ -205,7 +206,7 @@ pub mod node_values {
         preceded(
             char('{'),
             cut(terminated(
-                preceded(opt(ws), separated_list0(ws, node_object_kvp)),
+                delimited(opt(ws), separated_list0(ws, node_object_kvp), opt(ws)),
                 char('}'),
             )),
         )(input)
@@ -365,7 +366,7 @@ pub mod shapes {
     };
 
     use crate::{
-        node_values::{NodeValue, node_value},
+        node_values::{NodeKeyValuePair, NodeValue, node_object, node_value},
         shape_id::{absolute_root_shape_id, identifier, namespace, shape_id},
         traits::{ApplyStatement, Trait, apply_statement, trait_statements},
         whitespace::{br, comma, ws},
@@ -395,6 +396,7 @@ pub mod shapes {
         Simple(SimpleShape<'a>),
         Enum(EnumShape<'a>),
         Aggregate(AggregateShape<'a>),
+        Entity(EntityShape<'a>),
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -434,6 +436,14 @@ pub mod shapes {
         pub identifier: &'a str,
         pub shape_id: Option<&'a str>,
         pub value: Option<NodeValue<'a>>,
+    }
+
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    pub struct EntityShape<'a> {
+        pub type_name: &'a str,
+        pub identifier: &'a str,
+        pub mixins: Vec<&'a str>,
+        pub nodes: Vec<NodeKeyValuePair<'a>>,
     }
 
     /// ShapeSection = [NamespaceStatement UseSection [ShapeStatements]]
@@ -497,7 +507,7 @@ pub mod shapes {
             map(simple_shape, Shape::Simple),
             map(enum_shape, Shape::Enum),
             map(aggregate_shape, Shape::Aggregate),
-            // entity_shape,
+            map(entity_shape, Shape::Entity),
             // operation_shape,
         ))(input)
     }
@@ -684,6 +694,28 @@ pub mod shapes {
     /// ElidedShapeMember = "$" Identifier
     pub fn elided_shape_member(input: &str) -> IResult<&str, &str> {
         preceded(char('$'), cut(identifier))(input)
+    }
+
+    /// EntityShape = EntityTypeName SP Identifier [Mixins] [WS] NodeObject
+    pub fn entity_shape(input: &str) -> IResult<&str, EntityShape<'_>> {
+        map(
+            tuple((
+                separated_pair(entity_type_name, cut(space1), cut(identifier)),
+                opt(mixins),
+                cut(preceded(opt(ws), node_object)),
+            )),
+            |((type_name, identifier), mixins, nodes)| EntityShape {
+                type_name,
+                identifier,
+                mixins: mixins.unwrap_or_default(),
+                nodes,
+            },
+        )(input)
+    }
+
+    /// EntityTypeName = %s"service" / %s"resource"
+    pub fn entity_type_name(input: &str) -> IResult<&str, &str> {
+        alt((tag("service"), tag("resource")))(input)
     }
 }
 
@@ -1218,7 +1250,7 @@ enum Suit {
         }
     }
 
-    mod structure {
+    mod aggregate {
         use crate::shapes::{
             AggregateShape, Shape, ShapeMember, ShapeOrApply, ShapeSection, ShapeWithTraits,
             shape_section,
@@ -1273,6 +1305,60 @@ structure MyStructure for Test {
                         }),
                     })],
                 })
+            );
+        }
+    }
+
+    mod entity {
+        use crate::{
+            node_values::{NodeKeyValuePair, NodeValue},
+            shapes::{
+                EntityShape, Shape, ShapeOrApply, ShapeSection, ShapeWithTraits, shape_section,
+            },
+        };
+
+        #[test]
+        fn service() {
+            let (remaining, res) = shape_section(
+                r#"namespace smithy.example
+
+service ModelRepository {
+    version: "2020-07-13",
+    resources: [Model],
+    operations: [PingService]
+}"#,
+            )
+            .unwrap();
+
+            assert_eq!(remaining, "");
+            assert_eq!(
+                res,
+                Some(ShapeSection {
+                    namespace: "smithy.example",
+                    uses: vec![],
+                    shapes: vec![ShapeOrApply::Shape(ShapeWithTraits {
+                        traits: vec![],
+                        shape: Shape::Entity(EntityShape {
+                            type_name: "service",
+                            identifier: "ModelRepository",
+                            mixins: vec![],
+                            nodes: vec![
+                                NodeKeyValuePair {
+                                    key: "version",
+                                    value: NodeValue::String("2020-07-13"),
+                                },
+                                NodeKeyValuePair {
+                                    key: "resources",
+                                    value: NodeValue::Array(vec![NodeValue::String("Model")]),
+                                },
+                                NodeKeyValuePair {
+                                    key: "operations",
+                                    value: NodeValue::Array(vec![NodeValue::String("PingService")]),
+                                },
+                            ],
+                        },),
+                    },),],
+                },)
             );
         }
     }
