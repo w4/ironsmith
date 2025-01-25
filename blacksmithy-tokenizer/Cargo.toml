@@ -1,0 +1,8 @@
+[package]
+name = "blacksmithy-tokenizer"
+description = "Transforms Smithy 2.0 IDL files into a token tree"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+nom = "7.1"
