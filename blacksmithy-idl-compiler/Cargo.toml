@@ -1,7 +1,0 @@
-[package]
-name = "blacksmithy-idl-compiler"
-description = "Compiles Smithy 2.0 IDL files to machine-readable format"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
