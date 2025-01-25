@@ -1,25 +1,44 @@
 #![deny(clippy::pedantic)]
 #![allow(clippy::missing_errors_doc)]
 
+use node_values::NodeValue;
 use nom::{
+    IResult,
     combinator::{all_consuming, opt},
-    sequence::{preceded, tuple},
+    sequence::{delimited, tuple},
 };
+use shapes::ShapeSection;
 use whitespace::ws;
 
-pub enum Error<'a> {
-    Nom(nom::Err<nom::error::Error<&'a str>>),
+/// Abstract syntax tree for a Smithy file
+#[derive(Debug, Clone)]
+pub struct Ast<'a> {
+    /// Control section of the file
+    pub control: Vec<(&'a str, NodeValue<'a>)>,
+    /// Metadata section of the file
+    pub metadata: Vec<(&'a str, NodeValue<'a>)>,
+    /// Shapes defined within the file
+    pub shapes: Option<ShapeSection<'a>>,
 }
 
-// TODO: integrate with https://docs.rs/nom_locate and https://docs.rs/nom-supreme to provide better errors.
-pub fn parse_idl(input: &str) -> Result<(), Error<'_>> {
-    let (_, (_control, _metadata)) = all_consuming(preceded(
+/// Parses an entire Smithy 2.0 IDL format file and returns the abstract syntax tree for it.
+pub fn parse_ast(input: &str) -> IResult<&str, Ast<'_>> {
+    // TODO: integrate with https://docs.rs/nom_locate and https://docs.rs/nom-supreme to provide better errors
+    let (rest, (control, metadata, shapes)) = all_consuming(delimited(
         opt(ws),
-        tuple((control::control_section, metadata::metadata_section)),
-    ))(input)
-    .map_err(Error::Nom)?;
+        tuple((
+            control::control_section,
+            metadata::metadata_section,
+            shapes::shape_section,
+        )),
+        opt(ws),
+    ))(input)?;
 
-    Ok(())
+    Ok((rest, Ast {
+        control,
+        metadata,
+        shapes,
+    }))
 }
 
 pub mod comment {
