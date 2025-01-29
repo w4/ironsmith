@@ -1131,7 +1131,7 @@ pub mod traits {
         branch::alt,
         bytes::complete::tag,
         character::complete::{char, space1},
-        combinator::{cut, map, opt},
+        combinator::{cut, map, opt, recognize},
         multi::{separated_list0, separated_list1},
         sequence::{delimited, preceded, terminated},
         Parser,
@@ -1158,7 +1158,7 @@ pub mod traits {
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct ApplyStatement<'a> {
-        pub shape_id: ShapeId<'a>,
+        pub shape_id: &'a str,
         pub traits: Vec<Trait<'a>>,
     }
 
@@ -1231,7 +1231,7 @@ pub mod traits {
         preceded(
             tag("apply"),
             cut((
-                delimited(space1, shape_id, ws),
+                delimited(space1, recognize(shape_id), ws),
                 alt((apply_statement_singular, apply_statement_block)),
             )),
         )

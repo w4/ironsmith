@@ -39,7 +39,7 @@ pub enum Error<'a> {
 pub struct SemanticModel<'a> {
     smithy: &'a str,
     metadata: BTreeMap<&'a str, NodeValue<'a>>,
-    shapes: BTreeMap<&'a str, Shape<'a>>,
+    shapes: BTreeMap<&'a str, OuterShape<'a>>,
 }
 
 impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
@@ -73,11 +73,23 @@ impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
             .shapes
             .into_iter()
             .map(|v| {
-                let ShapeOrApply::Shape(shape) = v else {
-                    todo!();
+                let shape = match v {
+                    ShapeOrApply::Shape(shape) => shape,
+                    ShapeOrApply::Apply(apply) => {
+                        return Ok((
+                            apply.shape_id,
+                            OuterShape {
+                                traits: transform_traits(apply.traits, namespace, imports),
+                                mixins: vec![],
+                                inner: Shape::Apply,
+                            },
+                        ));
+                    }
                 };
 
-                let (identifier, _mixins, shape) = match shape.shape {
+                let traits = transform_traits(shape.traits, namespace, imports);
+
+                let (identifier, mixins, shape) = match shape.shape {
                     AstShape::Simple(SimpleShape {
                         type_name: SimpleTypeName::String,
                         identifier,
@@ -455,6 +467,17 @@ impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
                     }
                 };
 
+                let mixins = mixins
+                    .into_iter()
+                    .map(|v| expand_type_name(v, namespace, imports))
+                    .collect();
+
+                let shape = OuterShape {
+                    traits,
+                    mixins,
+                    inner: shape,
+                };
+
                 Ok((identifier, shape))
             })
             .collect::<Result<_, _>>()?;
@@ -667,13 +690,7 @@ pub enum Shape<'a> {
     Union(AggregateShape<'a>),
     Enum(AggregateShape<'a>),
     IntEnum(AggregateShape<'a>),
-    Apply(AstApply<'a>),
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct AstApply<'a> {
-    #[serde(borrow)]
-    pub traits: Traits<'a>,
+    Apply,
 }
 
 #[derive(Serialize, Deserialize)]
