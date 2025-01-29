@@ -10,6 +10,7 @@ exclude = ["/fixtures", "*.snap"]
 
 [dependencies]
 nom = "8.0"
+nom-language = "0.1"
 
 [dev-dependencies]
 insta = { version = "1.42", features = ["glob"] }

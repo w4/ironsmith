@@ -5,10 +5,13 @@ use node_values::NodeValue;
 use nom::{
     combinator::{all_consuming, opt},
     sequence::delimited,
-    IResult, Parser,
+    Finish, Parser,
 };
+use nom_language::error::{convert_error, VerboseError};
 use shapes::ShapeSection;
 use whitespace::ws;
+
+type IResult<I, T> = nom::IResult<I, T, VerboseError<I>>;
 
 /// Abstract syntax tree for a Smithy file
 #[derive(Debug, Clone)]
@@ -22,9 +25,9 @@ pub struct Ast<'a> {
 }
 
 /// Parses an entire Smithy 2.0 IDL format file and returns the abstract syntax tree for it.
-pub fn parse_ast(input: &str) -> IResult<&str, Ast<'_>> {
+pub fn parse_ast(input: &str) -> Result<Ast<'_>, String> {
     // TODO: integrate with https://docs.rs/nom_locate and https://docs.rs/nom-supreme to provide better errors
-    let (rest, (control, metadata, shapes)) = all_consuming(delimited(
+    let (_rest, (control, metadata, shapes)) = all_consuming(delimited(
         opt(ws),
         (
             control::control_section,
@@ -33,26 +36,26 @@ pub fn parse_ast(input: &str) -> IResult<&str, Ast<'_>> {
         ),
         opt(ws),
     ))
-    .parse(input)?;
+    .parse(input)
+    .finish()
+    .map_err(|e| convert_error(input, e))?;
 
-    Ok((
-        rest,
-        Ast {
-            control,
-            metadata,
-            shapes,
-        },
-    ))
+    Ok(Ast {
+        control,
+        metadata,
+        shapes,
+    })
 }
 
 pub mod comment {
+    use crate::IResult;
     use nom::{
         branch::alt,
         bytes::complete::tag,
         character::complete::{line_ending, not_line_ending},
         combinator::opt,
         sequence::delimited,
-        IResult, Parser,
+        Parser,
     };
 
     /// ```text
@@ -80,13 +83,14 @@ pub mod comment {
 }
 
 pub mod whitespace {
+    use crate::IResult;
     use nom::{
         branch::alt,
         character::complete::{char, line_ending, multispace1, space0},
         combinator::{opt, recognize},
         multi::many1,
         sequence::delimited,
-        IResult, Parser,
+        Parser,
     };
 
     /// ```text
@@ -122,12 +126,13 @@ pub mod control {
         combinator::cut,
         multi::many0,
         sequence::{delimited, preceded, separated_pair, terminated},
-        IResult, Parser,
+        Parser,
     };
 
     use crate::{
         node_values::{node_object_key, node_value, NodeValue},
         whitespace::br,
+        IResult,
     };
 
     /// ```text
@@ -163,12 +168,13 @@ pub mod metadata {
         combinator::cut,
         multi::many0,
         sequence::{delimited, preceded, separated_pair, terminated},
-        IResult, Parser,
+        Parser,
     };
 
     use crate::{
         node_values::{node_object_key, node_value, NodeValue},
         whitespace::br,
+        IResult,
     };
 
     /// ```text
@@ -206,12 +212,13 @@ pub mod node_values {
         multi::{many0, many1, separated_list0},
         number::complete::recognize_float,
         sequence::{delimited, preceded, separated_pair, terminated},
-        IResult, Parser,
+        Parser,
     };
 
     use crate::{
         shape_id::{identifier, shape_id, ShapeId},
         whitespace::ws,
+        IResult,
     };
 
     #[derive(Clone, Debug, PartialEq, Eq)]
@@ -408,6 +415,7 @@ pub mod node_values {
 }
 
 pub mod shape_id {
+    use crate::IResult;
     use nom::{
         branch::alt,
         bytes::complete::{take_while, take_while1},
@@ -415,7 +423,7 @@ pub mod shape_id {
         combinator::{map, opt, recognize},
         multi::separated_list1,
         sequence::{preceded, separated_pair},
-        IResult, Parser,
+        Parser,
     };
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -518,7 +526,7 @@ pub mod shapes {
         combinator::{cut, opt},
         multi::{many0, separated_list0, separated_list1},
         sequence::{delimited, preceded, separated_pair},
-        IResult, Parser,
+        Parser,
     };
 
     use crate::{
@@ -528,6 +536,7 @@ pub mod shapes {
         },
         traits::{apply_statement, trait_statements, ApplyStatement, Trait},
         whitespace::{br, comma, ws},
+        IResult,
     };
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -1125,13 +1134,14 @@ pub mod traits {
         combinator::{cut, map, opt},
         multi::{separated_list0, separated_list1},
         sequence::{delimited, preceded, terminated},
-        IResult, Parser,
+        Parser,
     };
 
     use crate::{
         node_values::{node_object_kvp, node_value, NodeKeyValuePair, NodeValue},
         shape_id::{shape_id, ShapeId},
         whitespace::ws,
+        IResult,
     };
 
     #[derive(Debug, Clone, PartialEq, Eq)]
@@ -1240,11 +1250,10 @@ mod test {
         glob!("../fixtures", "*.smithy", |path| {
             let input = std::fs::read_to_string(path).unwrap();
 
-            let (rest, ast) = match crate::parse_ast(&input) {
+            let ast = match crate::parse_ast(&input) {
                 Ok(v) => v,
                 Err(e) => panic!("Failed to parse {}: {e}", path.display()),
             };
-            assert_eq!(rest, "");
 
             assert_debug_snapshot!(ast);
         });
