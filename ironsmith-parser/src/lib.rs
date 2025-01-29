@@ -207,7 +207,7 @@ pub mod node_values {
     };
 
     use crate::{
-        shape_id::{identifier, shape_id},
+        shape_id::{identifier, shape_id, ShapeId},
         whitespace::ws,
     };
 
@@ -217,7 +217,13 @@ pub mod node_values {
         Object(Vec<NodeKeyValuePair<'a>>),
         Number(&'a str),
         Keyword(Keyword),
+        String(StringNode<'a>),
+    }
+
+    #[derive(Clone, Debug, PartialEq, Eq)]
+    pub enum StringNode<'a> {
         String(&'a str),
+        ShapeId(ShapeId<'a>),
     }
 
     #[derive(Clone, Debug, PartialEq, Eq)]
@@ -305,8 +311,12 @@ pub mod node_values {
     /// ```text
     /// NodeStringValue = ShapeId / TextBlock / QuotedText
     /// ```
-    pub fn node_string_value(input: &str) -> IResult<&str, &str> {
-        alt((shape_id, text_block, quoted_text))(input)
+    pub fn node_string_value(input: &str) -> IResult<&str, StringNode<'_>> {
+        alt((
+            map(shape_id, StringNode::ShapeId),
+            map(text_block, StringNode::String),
+            map(quoted_text, StringNode::String),
+        ))(input)
     }
 
     /// ```text
@@ -396,31 +406,64 @@ pub mod shape_id {
         branch::alt,
         bytes::complete::{take_while, take_while1},
         character::complete::{alpha1, alphanumeric1, char},
-        combinator::{opt, recognize},
+        combinator::{map, opt, recognize},
         multi::separated_list1,
         sequence::{preceded, separated_pair, tuple},
         IResult,
     };
 
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub struct AbsoluteRootShapeId<'a> {
+        pub namespace: &'a str,
+        pub identifier: &'a str,
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum RootShapeId<'a> {
+        Relative(&'a str),
+        Absolute(AbsoluteRootShapeId<'a>),
+    }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub struct ShapeId<'a> {
+        pub root_shape_id: RootShapeId<'a>,
+        pub shape_id_member: Option<&'a str>,
+    }
+
     /// ```text
     /// ShapeId = RootShapeId [ShapeIdMember]
     /// ```
-    pub fn shape_id(input: &str) -> IResult<&str, &str> {
-        recognize(tuple((root_shape_id, opt(shape_id_member))))(input)
+    pub fn shape_id(input: &str) -> IResult<&str, ShapeId<'_>> {
+        map(
+            tuple((root_shape_id, opt(shape_id_member))),
+            |(root_shape_id, shape_id_member)| ShapeId {
+                root_shape_id,
+                shape_id_member,
+            },
+        )(input)
     }
 
     /// ```text
     /// RootShapeId = AbsoluteRootShapeId / Identifier
     /// ```
-    pub fn root_shape_id(input: &str) -> IResult<&str, &str> {
-        alt((absolute_root_shape_id, identifier))(input)
+    pub fn root_shape_id(input: &str) -> IResult<&str, RootShapeId<'_>> {
+        alt((
+            map(absolute_root_shape_id, RootShapeId::Absolute),
+            map(identifier, RootShapeId::Relative),
+        ))(input)
     }
 
     /// ```text
     /// AbsoluteRootShapeId = Namespace "#" Identifier
     /// ```
-    pub fn absolute_root_shape_id(input: &str) -> IResult<&str, &str> {
-        recognize(separated_pair(namespace, char('#'), identifier))(input)
+    pub fn absolute_root_shape_id(input: &str) -> IResult<&str, AbsoluteRootShapeId<'_>> {
+        map(
+            separated_pair(namespace, char('#'), identifier),
+            |(namespace, identifier)| AbsoluteRootShapeId {
+                namespace,
+                identifier,
+            },
+        )(input)
     }
 
     /// ```text
@@ -473,7 +516,9 @@ pub mod shapes {
 
     use crate::{
         node_values::{node_object, node_value, NodeKeyValuePair, NodeValue},
-        shape_id::{absolute_root_shape_id, identifier, namespace, shape_id},
+        shape_id::{
+            absolute_root_shape_id, identifier, namespace, shape_id, AbsoluteRootShapeId, ShapeId,
+        },
         traits::{apply_statement, trait_statements, ApplyStatement, Trait},
         whitespace::{br, comma, ws},
     };
@@ -481,7 +526,7 @@ pub mod shapes {
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct ShapeSection<'a> {
         pub namespace: &'a str,
-        pub uses: Vec<&'a str>,
+        pub uses: Vec<AbsoluteRootShapeId<'a>>,
         pub shapes: Vec<ShapeOrApply<'a>>,
     }
 
@@ -510,7 +555,7 @@ pub mod shapes {
     pub struct SimpleShape<'a> {
         pub type_name: SimpleTypeName,
         pub identifier: &'a str,
-        pub mixins: Vec<&'a str>,
+        pub mixins: Vec<ShapeId<'a>>,
     }
 
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -534,7 +579,7 @@ pub mod shapes {
     pub struct EnumShape<'a> {
         pub type_name: EnumTypeName,
         pub identifier: &'a str,
-        pub mixins: Vec<&'a str>,
+        pub mixins: Vec<ShapeId<'a>>,
         pub members: Vec<EnumShapeMember<'a>>,
     }
 
@@ -555,8 +600,8 @@ pub mod shapes {
     pub struct AggregateShape<'a> {
         pub type_name: AggregateTypeName,
         pub identifier: &'a str,
-        pub for_resource: Option<&'a str>,
-        pub mixins: Vec<&'a str>,
+        pub for_resource: Option<ShapeId<'a>>,
+        pub mixins: Vec<ShapeId<'a>>,
         pub members: Vec<ShapeMember<'a>>,
     }
 
@@ -572,7 +617,7 @@ pub mod shapes {
     pub struct ShapeMember<'a> {
         pub traits: Vec<Trait<'a>>,
         pub identifier: &'a str,
-        pub shape_id: Option<&'a str>,
+        pub shape_id: Option<ShapeId<'a>>,
         pub value: Option<NodeValue<'a>>,
     }
 
@@ -580,7 +625,7 @@ pub mod shapes {
     pub struct EntityShape<'a> {
         pub type_name: EntityTypeName,
         pub identifier: &'a str,
-        pub mixins: Vec<&'a str>,
+        pub mixins: Vec<ShapeId<'a>>,
         pub nodes: Vec<NodeKeyValuePair<'a>>,
     }
 
@@ -593,7 +638,7 @@ pub mod shapes {
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct OperationShape<'a> {
         pub identifier: &'a str,
-        pub mixins: Vec<&'a str>,
+        pub mixins: Vec<ShapeId<'a>>,
         pub body: Vec<OperationProperty<'a>>,
     }
 
@@ -601,20 +646,20 @@ pub mod shapes {
     pub enum OperationProperty<'a> {
         Input(OperationPropertyShape<'a>),
         Output(OperationPropertyShape<'a>),
-        Errors(Vec<&'a str>),
+        Errors(Vec<ShapeId<'a>>),
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub enum OperationPropertyShape<'a> {
-        Explicit(&'a str),
+        Explicit(ShapeId<'a>),
         Inline(InlineAggregateShape<'a>),
     }
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct InlineAggregateShape<'a> {
         pub traits: Vec<Trait<'a>>,
-        pub for_resource: Option<&'a str>,
-        pub mixins: Vec<&'a str>,
+        pub for_resource: Option<ShapeId<'a>>,
+        pub mixins: Vec<ShapeId<'a>>,
         pub members: Vec<ShapeMember<'a>>,
     }
 
@@ -642,14 +687,14 @@ pub mod shapes {
     /// ```text
     /// UseSection = *(UseStatement)
     /// ```
-    pub fn use_section(input: &str) -> IResult<&str, Vec<&str>> {
+    pub fn use_section(input: &str) -> IResult<&str, Vec<AbsoluteRootShapeId<'_>>> {
         many0(use_statement)(input)
     }
 
     /// ```text
     /// UseStatement = %s"use" SP AbsoluteRootShapeId BR
     /// ```
-    pub fn use_statement(input: &str) -> IResult<&str, &str> {
+    pub fn use_statement(input: &str) -> IResult<&str, AbsoluteRootShapeId<'_>> {
         preceded(
             tag("use"),
             cut(delimited(space1, absolute_root_shape_id, br)),
@@ -746,7 +791,7 @@ pub mod shapes {
     /// ```text
     /// Mixins = [SP] %s"with" [WS] "[" [WS] 1*(ShapeId [WS]) "]"
     /// ```
-    pub fn mixins(input: &str) -> IResult<&str, Vec<&str>> {
+    pub fn mixins(input: &str) -> IResult<&str, Vec<ShapeId<'_>>> {
         preceded(
             space0,
             preceded(
@@ -864,7 +909,7 @@ pub mod shapes {
     /// ```text
     /// ForResource = SP %s"for" SP ShapeId
     /// ```
-    pub fn for_resource(input: &str) -> IResult<&str, &str> {
+    pub fn for_resource(input: &str) -> IResult<&str, ShapeId<'_>> {
         preceded(tuple((space1, tag("for"), space1)), shape_id)(input)
     }
 
@@ -906,7 +951,7 @@ pub mod shapes {
     /// ```text
     /// ExplicitShapeMember = Identifier [SP] ":" [SP] ShapeId
     /// ```
-    pub fn explicit_shape_member(input: &str) -> IResult<&str, (&str, &str)> {
+    pub fn explicit_shape_member(input: &str) -> IResult<&str, (&str, ShapeId<'_>)> {
         separated_pair(
             identifier,
             tuple((space0, char(':'), space0)),
@@ -1010,7 +1055,7 @@ pub mod shapes {
     /// ```text
     /// OperationErrors = %s"errors" [WS] ":" [WS] "[" [WS] *(ShapeId [WS]) "]"
     /// ```
-    pub fn operation_errors(input: &str) -> IResult<&str, Vec<&str>> {
+    pub fn operation_errors(input: &str) -> IResult<&str, Vec<ShapeId<'_>>> {
         preceded(
             tuple((tag("errors"), opt(ws))),
             cut(preceded(
@@ -1074,13 +1119,13 @@ pub mod traits {
 
     use crate::{
         node_values::{node_object_kvp, node_value, NodeKeyValuePair, NodeValue},
-        shape_id::shape_id,
+        shape_id::{shape_id, ShapeId},
         whitespace::ws,
     };
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct Trait<'a> {
-        pub shape_id: &'a str,
+        pub shape_id: ShapeId<'a>,
         pub body: Option<TraitBody<'a>>,
     }
 
@@ -1092,7 +1137,7 @@ pub mod traits {
 
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct ApplyStatement<'a> {
-        pub shape_id: &'a str,
+        pub shape_id: ShapeId<'a>,
         pub traits: Vec<Trait<'a>>,
     }
 
