@@ -8,7 +8,9 @@ Ast {
         (
             "version",
             String(
-                "2.0",
+                String(
+                    "2.0",
+                ),
             ),
         ),
     ],
@@ -17,22 +19,38 @@ Ast {
         ShapeSection {
             namespace: "smithy.protocoltests.rpcv2Cbor",
             uses: [
-                "smithy.protocols#rpcv2Cbor",
-                "smithy.protocoltests.shared#DateTime",
-                "smithy.test#httpResponseTests",
+                AbsoluteRootShapeId {
+                    namespace: "smithy.protocols",
+                    identifier: "rpcv2Cbor",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.protocoltests.shared",
+                    identifier: "DateTime",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.test",
+                    identifier: "httpResponseTests",
+                },
             ],
             shapes: [
                 Shape(
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "tags",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "tags",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
                                             [
                                                 String(
-                                                    "client-only",
+                                                    String(
+                                                        "client-only",
+                                                    ),
                                                 ),
                                             ],
                                         ),
@@ -47,7 +65,12 @@ Ast {
                                 body: [
                                     Output(
                                         Explicit(
-                                            "FractionalSecondsOutput",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "FractionalSecondsOutput",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                     ),
                                 ],
@@ -57,10 +80,20 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: "FractionalSeconds",
+                        shape_id: ShapeId {
+                            root_shape_id: Relative(
+                                "FractionalSeconds",
+                            ),
+                            shape_id_member: None,
+                        },
                         traits: [
                             Trait {
-                                shape_id: "httpResponseTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpResponseTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -70,19 +103,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "RpcV2CborDateTimeWithFractionalSeconds",
+                                                                String(
+                                                                    "RpcV2CborDateTimeWithFractionalSeconds",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "Ensures that clients can correctly parse timestamps with fractional seconds",
+                                                                String(
+                                                                    "Ensures that clients can correctly parse timestamps with fractional seconds",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -94,7 +138,9 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v2hkYXRldGltZcH7Qcw32zgPvnf/",
+                                                                String(
+                                                                    "v2hkYXRldGltZcH7Qcw32zgPvnf/",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -104,13 +150,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -132,13 +182,17 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "client",
+                                                                String(
+                                                                    "client",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -165,7 +219,12 @@ Ast {
                                         traits: [],
                                         identifier: "datetime",
                                         shape_id: Some(
-                                            "DateTime",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "DateTime",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                         value: None,
                                     },

@@ -8,7 +8,9 @@ Ast {
         (
             "version",
             String(
-                "2.0",
+                String(
+                    "2.0",
+                ),
             ),
         ),
     ],
@@ -17,24 +19,45 @@ Ast {
         ShapeSection {
             namespace: "smithy.protocoltests.rpcv2Cbor",
             uses: [
-                "smithy.protocols#rpcv2Cbor",
-                "smithy.test#httpRequestTests",
-                "smithy.test#httpResponseTests",
+                AbsoluteRootShapeId {
+                    namespace: "smithy.protocols",
+                    identifier: "rpcv2Cbor",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.test",
+                    identifier: "httpRequestTests",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.test",
+                    identifier: "httpResponseTests",
+                },
             ],
             shapes: [
                 Shape(
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "rpcv2Cbor",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "rpcv2Cbor",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: None,
                             },
                             Trait {
-                                shape_id: "title",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "title",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         String(
-                                            "RpcV2 Protocol Service",
+                                            String(
+                                                "RpcV2 Protocol Service",
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -49,7 +72,9 @@ Ast {
                                     NodeKeyValuePair {
                                         key: "version",
                                         value: String(
-                                            "2020-07-14",
+                                            String(
+                                                "2020-07-14",
+                                            ),
                                         ),
                                     },
                                     NodeKeyValuePair {
@@ -57,43 +82,134 @@ Ast {
                                         value: Array(
                                             [
                                                 String(
-                                                    "NoInputOutput",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "NoInputOutput",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "EmptyInputOutput",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "EmptyInputOutput",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "OptionalInputOutput",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "OptionalInputOutput",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "SimpleScalarProperties",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "SimpleScalarProperties",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "RpcV2CborLists",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "RpcV2CborLists",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "RpcV2CborDenseMaps",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "RpcV2CborDenseMaps",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "RpcV2CborSparseMaps",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "RpcV2CborSparseMaps",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "RecursiveShapes",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "RecursiveShapes",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "GreetingWithErrors",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "GreetingWithErrors",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "FractionalSeconds",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "FractionalSeconds",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "OperationWithDefaults",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "OperationWithDefaults",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "SparseNullsOperation",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "SparseNullsOperation",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                                 String(
-                                                    "Float16",
+                                                    ShapeId(
+                                                        ShapeId {
+                                                            root_shape_id: Relative(
+                                                                "Float16",
+                                                            ),
+                                                            shape_id_member: None,
+                                                        },
+                                                    ),
                                                 ),
                                             ],
                                         ),
@@ -131,7 +247,12 @@ Ast {
                                         traits: [],
                                         identifier: "value",
                                         shape_id: Some(
-                                            "String",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "String",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                         value: None,
                                     },

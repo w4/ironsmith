@@ -8,7 +8,9 @@ Ast {
         (
             "version",
             String(
-                "2.0",
+                String(
+                    "2.0",
+                ),
             ),
         ),
     ],
@@ -17,16 +19,30 @@ Ast {
         ShapeSection {
             namespace: "smithy.protocoltests.rpcv2Cbor",
             uses: [
-                "smithy.test#httpRequestTests",
-                "smithy.test#httpResponseTests",
-                "smithy.protocols#rpcv2Cbor",
+                AbsoluteRootShapeId {
+                    namespace: "smithy.test",
+                    identifier: "httpRequestTests",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.test",
+                    identifier: "httpResponseTests",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.protocols",
+                    identifier: "rpcv2Cbor",
+                },
             ],
             shapes: [
                 Shape(
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "idempotent",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "idempotent",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: None,
                             },
                         ],
@@ -37,13 +53,28 @@ Ast {
                                 body: [
                                     Output(
                                         Explicit(
-                                            "GreetingWithErrorsOutput",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "GreetingWithErrorsOutput",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                     ),
                                     Errors(
                                         [
-                                            "InvalidGreeting",
-                                            "ComplexError",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "InvalidGreeting",
+                                                ),
+                                                shape_id_member: None,
+                                            },
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "ComplexError",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ],
                                     ),
                                 ],
@@ -65,7 +96,12 @@ Ast {
                                         traits: [],
                                         identifier: "greeting",
                                         shape_id: Some(
-                                            "String",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "String",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                         value: None,
                                     },
@@ -78,11 +114,18 @@ Ast {
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "error",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "error",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         String(
-                                            "client",
+                                            String(
+                                                "client",
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -99,7 +142,12 @@ Ast {
                                         traits: [],
                                         identifier: "Message",
                                         shape_id: Some(
-                                            "String",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "String",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                         value: None,
                                     },
@@ -110,10 +158,20 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: "InvalidGreeting",
+                        shape_id: ShapeId {
+                            root_shape_id: Relative(
+                                "InvalidGreeting",
+                            ),
+                            shape_id_member: None,
+                        },
                         traits: [
                             Trait {
-                                shape_id: "httpResponseTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpResponseTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -123,19 +181,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "RpcV2CborInvalidGreetingError",
+                                                                String(
+                                                                    "RpcV2CborInvalidGreetingError",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "Parses simple RpcV2 Cbor errors",
+                                                                String(
+                                                                    "Parses simple RpcV2 Cbor errors",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -145,7 +214,9 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "Message",
                                                                         value: String(
-                                                                            "Hi",
+                                                                            String(
+                                                                                "Hi",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -164,13 +235,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -179,13 +254,17 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v2ZfX3R5cGV4LnNtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNJbnZhbGlkR3JlZXRpbmdnTWVzc2FnZWJIaf8=",
+                                                                String(
+                                                                    "v2ZfX3R5cGV4LnNtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNJbnZhbGlkR3JlZXRpbmdnTWVzc2FnZWJIaf8=",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -202,11 +281,18 @@ Ast {
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "error",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "error",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         String(
-                                            "client",
+                                            String(
+                                                "client",
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -223,7 +309,12 @@ Ast {
                                         traits: [],
                                         identifier: "TopLevel",
                                         shape_id: Some(
-                                            "String",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "String",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                         value: None,
                                     },
@@ -231,7 +322,12 @@ Ast {
                                         traits: [],
                                         identifier: "Nested",
                                         shape_id: Some(
-                                            "ComplexNestedErrorData",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "ComplexNestedErrorData",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                         value: None,
                                     },
@@ -254,7 +350,12 @@ Ast {
                                         traits: [],
                                         identifier: "Foo",
                                         shape_id: Some(
-                                            "String",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "String",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                         value: None,
                                     },
@@ -265,10 +366,20 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: "ComplexError",
+                        shape_id: ShapeId {
+                            root_shape_id: Relative(
+                                "ComplexError",
+                            ),
+                            shape_id_member: None,
+                        },
                         traits: [
                             Trait {
-                                shape_id: "httpResponseTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpResponseTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -278,19 +389,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "RpcV2CborComplexError",
+                                                                String(
+                                                                    "RpcV2CborComplexError",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "Parses a complex error with no message member",
+                                                                String(
+                                                                    "Parses a complex error with no message member",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -300,7 +422,9 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "TopLevel",
                                                                         value: String(
-                                                                            "Top level",
+                                                                            String(
+                                                                                "Top level",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
@@ -310,7 +434,9 @@ Ast {
                                                                                 NodeKeyValuePair {
                                                                                     key: "Foo",
                                                                                     value: String(
-                                                                                        "bar",
+                                                                                        String(
+                                                                                            "bar",
+                                                                                        ),
                                                                                     ),
                                                                                 },
                                                                             ],
@@ -332,13 +458,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -347,13 +477,17 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v2ZfX3R5cGV4K3NtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNDb21wbGV4RXJyb3JoVG9wTGV2ZWxpVG9wIGxldmVsZk5lc3RlZL9jRm9vY2Jhcv//",
+                                                                String(
+                                                                    "v2ZfX3R5cGV4K3NtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNDb21wbGV4RXJyb3JoVG9wTGV2ZWxpVG9wIGxldmVsZk5lc3RlZL9jRm9vY2Jhcv//",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -363,13 +497,22 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "RpcV2CborEmptyComplexError",
+                                                                String(
+                                                                    "RpcV2CborEmptyComplexError",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -385,13 +528,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -400,13 +547,17 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v2ZfX3R5cGV4K3NtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNDb21wbGV4RXJyb3L/",
+                                                                String(
+                                                                    "v2ZfX3R5cGV4K3NtaXRoeS5wcm90b2NvbHRlc3RzLnJwY3YyQ2JvciNDb21wbGV4RXJyb3L/",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                     ],

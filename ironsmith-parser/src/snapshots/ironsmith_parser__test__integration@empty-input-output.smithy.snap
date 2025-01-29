@@ -8,7 +8,9 @@ Ast {
         (
             "version",
             String(
-                "2.0",
+                String(
+                    "2.0",
+                ),
             ),
         ),
     ],
@@ -17,16 +19,30 @@ Ast {
         ShapeSection {
             namespace: "smithy.protocoltests.rpcv2Cbor",
             uses: [
-                "smithy.protocols#rpcv2Cbor",
-                "smithy.test#httpRequestTests",
-                "smithy.test#httpResponseTests",
+                AbsoluteRootShapeId {
+                    namespace: "smithy.protocols",
+                    identifier: "rpcv2Cbor",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.test",
+                    identifier: "httpRequestTests",
+                },
+                AbsoluteRootShapeId {
+                    namespace: "smithy.test",
+                    identifier: "httpResponseTests",
+                },
             ],
             shapes: [
                 Shape(
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "httpRequestTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpRequestTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -36,19 +52,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "no_input",
+                                                                String(
+                                                                    "no_input",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "Body is empty and no Content-Type header if no input",
+                                                                String(
+                                                                    "Body is empty and no Content-Type header if no input",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -58,13 +85,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Accept",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -75,10 +106,14 @@ Ast {
                                                             value: Array(
                                                                 [
                                                                     String(
-                                                                        "Content-Type",
+                                                                        String(
+                                                                            "Content-Type",
+                                                                        ),
                                                                     ),
                                                                     String(
-                                                                        "X-Amz-Target",
+                                                                        String(
+                                                                            "X-Amz-Target",
+                                                                        ),
                                                                     ),
                                                                 ],
                                                             ),
@@ -86,19 +121,25 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "method",
                                                             value: String(
-                                                                "POST",
+                                                                String(
+                                                                    "POST",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "uri",
                                                             value: String(
-                                                                "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                                String(
+                                                                    "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "",
+                                                                String(
+                                                                    "",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -108,19 +149,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "NoInputServerAllowsEmptyCbor",
+                                                                String(
+                                                                    "NoInputServerAllowsEmptyCbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "Servers should accept CBOR empty struct if no input.",
+                                                                String(
+                                                                    "Servers should accept CBOR empty struct if no input.",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -130,19 +182,25 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Accept",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -151,25 +209,33 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "method",
                                                             value: String(
-                                                                "POST",
+                                                                String(
+                                                                    "POST",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "uri",
                                                             value: String(
-                                                                "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                                String(
+                                                                    "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v/8=",
+                                                                String(
+                                                                    "v/8=",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "server",
+                                                                String(
+                                                                    "server",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -179,19 +245,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "NoInputServerAllowsEmptyBody",
+                                                                String(
+                                                                    "NoInputServerAllowsEmptyBody",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "            Servers should accept an empty body if there is no input. Additionally,\n            they should not raise an error if the `Accept` header is set.",
+                                                                String(
+                                                                    "            Servers should accept an empty body if there is no input. Additionally,\n            they should not raise an error if the `Accept` header is set.",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -201,19 +278,25 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Accept",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -222,25 +305,33 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "method",
                                                             value: String(
-                                                                "POST",
+                                                                String(
+                                                                    "POST",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "uri",
                                                             value: String(
-                                                                "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                                String(
+                                                                    "/service/RpcV2Protocol/operation/NoInputOutput",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "",
+                                                                String(
+                                                                    "",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "server",
+                                                                String(
+                                                                    "server",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -251,7 +342,12 @@ Ast {
                                 ),
                             },
                             Trait {
-                                shape_id: "httpResponseTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpResponseTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -261,31 +357,46 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "no_output",
+                                                                String(
+                                                                    "no_output",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "A `Content-Type` header should not be set if the response body is empty.",
+                                                                String(
+                                                                    "A `Content-Type` header should not be set if the response body is empty.",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "",
+                                                                String(
+                                                                    "",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -295,7 +406,9 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -306,7 +419,9 @@ Ast {
                                                             value: Array(
                                                                 [
                                                                     String(
-                                                                        "Content-Type",
+                                                                        String(
+                                                                            "Content-Type",
+                                                                        ),
                                                                     ),
                                                                 ],
                                                             ),
@@ -324,19 +439,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "NoOutputClientAllowsEmptyCbor",
+                                                                String(
+                                                                    "NoOutputClientAllowsEmptyCbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "Clients should accept a CBOR empty struct if there is no output.",
+                                                                String(
+                                                                    "Clients should accept a CBOR empty struct if there is no output.",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -346,13 +472,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -367,19 +497,25 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v/8=",
+                                                                String(
+                                                                    "v/8=",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "client",
+                                                                String(
+                                                                    "client",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -389,19 +525,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "NoOutputClientAllowsEmptyBody",
+                                                                String(
+                                                                    "NoOutputClientAllowsEmptyBody",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "            Clients should accept an empty body if there is no output and\n            should not raise an error if the `Content-Type` header is set.",
+                                                                String(
+                                                                    "            Clients should accept an empty body if there is no output and\n            should not raise an error if the `Content-Type` header is set.",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -411,13 +558,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -432,19 +583,25 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "",
+                                                                String(
+                                                                    "",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "client",
+                                                                String(
+                                                                    "client",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -468,7 +625,12 @@ Ast {
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "httpRequestTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpRequestTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -478,19 +640,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "empty_input",
+                                                                String(
+                                                                    "empty_input",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "When Input structure is empty we write CBOR equivalent of {}",
+                                                                String(
+                                                                    "When Input structure is empty we write CBOR equivalent of {}",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -500,19 +673,25 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Accept",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -523,7 +702,9 @@ Ast {
                                                             value: Array(
                                                                 [
                                                                     String(
-                                                                        "Content-Length",
+                                                                        String(
+                                                                            "Content-Length",
+                                                                        ),
                                                                     ),
                                                                 ],
                                                             ),
@@ -533,7 +714,9 @@ Ast {
                                                             value: Array(
                                                                 [
                                                                     String(
-                                                                        "X-Amz-Target",
+                                                                        String(
+                                                                            "X-Amz-Target",
+                                                                        ),
                                                                     ),
                                                                 ],
                                                             ),
@@ -541,25 +724,33 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "method",
                                                             value: String(
-                                                                "POST",
+                                                                String(
+                                                                    "POST",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "uri",
                                                             value: String(
-                                                                "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                                String(
+                                                                    "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v/8=",
+                                                                String(
+                                                                    "v/8=",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -569,19 +760,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "empty_input_no_body",
+                                                                String(
+                                                                    "empty_input_no_body",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "When Input structure is empty the server should accept an empty body",
+                                                                String(
+                                                                    "When Input structure is empty the server should accept an empty body",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -591,19 +793,25 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Accept",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -612,31 +820,41 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "method",
                                                             value: String(
-                                                                "POST",
+                                                                String(
+                                                                    "POST",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "uri",
                                                             value: String(
-                                                                "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                                String(
+                                                                    "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "",
+                                                                String(
+                                                                    "",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "server",
+                                                                String(
+                                                                    "server",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -646,19 +864,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "empty_input_no_body_has_accept",
+                                                                String(
+                                                                    "empty_input_no_body_has_accept",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "            When input structure, is empty the server should accept an empty body\n            even if the Accept header is set.",
+                                                                String(
+                                                                    "            When input structure, is empty the server should accept an empty body\n            even if the Accept header is set.",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -668,19 +897,25 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Accept",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -689,31 +924,41 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "method",
                                                             value: String(
-                                                                "POST",
+                                                                String(
+                                                                    "POST",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "uri",
                                                             value: String(
-                                                                "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                                String(
+                                                                    "/service/RpcV2Protocol/operation/EmptyInputOutput",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "",
+                                                                String(
+                                                                    "",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "server",
+                                                                String(
+                                                                    "server",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -724,7 +969,12 @@ Ast {
                                 ),
                             },
                             Trait {
-                                shape_id: "httpResponseTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpResponseTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -734,31 +984,46 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "empty_output",
+                                                                String(
+                                                                    "empty_output",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "When output structure is empty we write CBOR equivalent of {}",
+                                                                String(
+                                                                    "When output structure is empty we write CBOR equivalent of {}",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v/8=",
+                                                                String(
+                                                                    "v/8=",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -768,13 +1033,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -793,31 +1062,46 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "empty_output_no_body",
+                                                                String(
+                                                                    "empty_output_no_body",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "When output structure is empty the client should accept an empty body",
+                                                                String(
+                                                                    "When output structure is empty the client should accept an empty body",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "",
+                                                                String(
+                                                                    "",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -827,13 +1111,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -848,7 +1136,9 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "appliesTo",
                                                             value: String(
-                                                                "client",
+                                                                String(
+                                                                    "client",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -866,12 +1156,22 @@ Ast {
                                 body: [
                                     Input(
                                         Explicit(
-                                            "EmptyStructure",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "EmptyStructure",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                     ),
                                     Output(
                                         Explicit(
-                                            "EmptyStructure",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "EmptyStructure",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                     ),
                                 ],
@@ -883,7 +1183,12 @@ Ast {
                     ShapeWithTraits {
                         traits: [
                             Trait {
-                                shape_id: "httpRequestTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpRequestTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -893,19 +1198,30 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "optional_input",
+                                                                String(
+                                                                    "optional_input",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "When input is empty we write CBOR equivalent of {}",
+                                                                String(
+                                                                    "When input is empty we write CBOR equivalent of {}",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -915,19 +1231,25 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Accept",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -938,7 +1260,9 @@ Ast {
                                                             value: Array(
                                                                 [
                                                                     String(
-                                                                        "X-Amz-Target",
+                                                                        String(
+                                                                            "X-Amz-Target",
+                                                                        ),
                                                                     ),
                                                                 ],
                                                             ),
@@ -946,25 +1270,33 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "method",
                                                             value: String(
-                                                                "POST",
+                                                                String(
+                                                                    "POST",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "uri",
                                                             value: String(
-                                                                "/service/RpcV2Protocol/operation/OptionalInputOutput",
+                                                                String(
+                                                                    "/service/RpcV2Protocol/operation/OptionalInputOutput",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v/8=",
+                                                                String(
+                                                                    "v/8=",
+                                                                ),
                                                             ),
                                                         },
                                                     ],
@@ -975,7 +1307,12 @@ Ast {
                                 ),
                             },
                             Trait {
-                                shape_id: "httpResponseTests",
+                                shape_id: ShapeId {
+                                    root_shape_id: Relative(
+                                        "httpResponseTests",
+                                    ),
+                                    shape_id_member: None,
+                                },
                                 body: Some(
                                     Node(
                                         Array(
@@ -985,31 +1322,46 @@ Ast {
                                                         NodeKeyValuePair {
                                                             key: "id",
                                                             value: String(
-                                                                "optional_output",
+                                                                String(
+                                                                    "optional_output",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "protocol",
                                                             value: String(
-                                                                "rpcv2Cbor",
+                                                                ShapeId(
+                                                                    ShapeId {
+                                                                        root_shape_id: Relative(
+                                                                            "rpcv2Cbor",
+                                                                        ),
+                                                                        shape_id_member: None,
+                                                                    },
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "documentation",
                                                             value: String(
-                                                                "When output is empty we write CBOR equivalent of {}",
+                                                                String(
+                                                                    "When output is empty we write CBOR equivalent of {}",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "body",
                                                             value: String(
-                                                                "v/8=",
+                                                                String(
+                                                                    "v/8=",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
                                                             key: "bodyMediaType",
                                                             value: String(
-                                                                "application/cbor",
+                                                                String(
+                                                                    "application/cbor",
+                                                                ),
                                                             ),
                                                         },
                                                         NodeKeyValuePair {
@@ -1019,13 +1371,17 @@ Ast {
                                                                     NodeKeyValuePair {
                                                                         key: "smithy-protocol",
                                                                         value: String(
-                                                                            "rpc-v2-cbor",
+                                                                            String(
+                                                                                "rpc-v2-cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                     NodeKeyValuePair {
                                                                         key: "Content-Type",
                                                                         value: String(
-                                                                            "application/cbor",
+                                                                            String(
+                                                                                "application/cbor",
+                                                                            ),
                                                                         ),
                                                                     },
                                                                 ],
@@ -1052,12 +1408,22 @@ Ast {
                                 body: [
                                     Input(
                                         Explicit(
-                                            "SimpleStructure",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "SimpleStructure",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                     ),
                                     Output(
                                         Explicit(
-                                            "SimpleStructure",
+                                            ShapeId {
+                                                root_shape_id: Relative(
+                                                    "SimpleStructure",
+                                                ),
+                                                shape_id_member: None,
+                                            },
                                         ),
                                     ),
                                 ],
