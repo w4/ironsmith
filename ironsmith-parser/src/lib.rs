@@ -207,9 +207,9 @@ pub mod node_values {
     use nom::{
         branch::alt,
         bytes::complete::{tag, take_while_m_n},
-        character::complete::{char, line_ending, one_of, space0},
+        character::complete::{char, line_ending, multispace0, newline, one_of},
         combinator::{cut, opt, recognize},
-        multi::{many0, many1, separated_list0},
+        multi::{many0, separated_list0},
         number::complete::recognize_float,
         sequence::{delimited, preceded, separated_pair, terminated},
         Parser,
@@ -333,23 +333,21 @@ pub mod node_values {
     /// TextBlock = ThreeDquotes [SP] NL *TextBlockContent ThreeDquotes
     /// ```
     pub fn text_block(input: &str) -> IResult<&str, &str> {
-        delimited(
+        let res = delimited(
             tag(r#"""""#),
-            preceded((space0, line_ending), recognize(many0(text_block_content))),
+            preceded(multispace0, recognize(many0(text_block_content))),
             tag(r#"""""#),
         )
-        .parse(input)
+        .parse(input)?;
+        eprintln!("{}", res.1);
+        Ok(res)
     }
 
     // ```
     // TextBlockContent = QuotedChar / (1*2DQUOTE 1*QuotedChar)
     // ```
     pub fn text_block_content(input: &str) -> IResult<&str, &str> {
-        alt((
-            quoted_char,
-            preceded(many1(tag(r#""""#)), recognize(many1(quoted_char))),
-        ))
-        .parse(input)
+        alt((quoted_char, preceded(tag(r#""""#), quoted_char))).parse(input)
     }
 
     /// ```text
@@ -397,7 +395,10 @@ pub mod node_values {
     pub fn escaped_char(input: &str) -> IResult<&str, &str> {
         preceded(
             char('\\'),
-            alt((recognize(one_of(r#"bfnrt\/""#)), unicode_escape)),
+            alt((
+                recognize(alt((one_of(r#"bfnrt\/""#), newline))),
+                unicode_escape,
+            )),
         )
         .parse(input)
     }
@@ -1209,12 +1210,13 @@ pub mod traits {
         preceded(
             char('('),
             cut(terminated(
-                preceded(
+                delimited(
                     opt(ws),
                     opt(alt((
                         trait_structure.map(TraitBody::Structure),
                         trait_node.map(TraitBody::Node),
                     ))),
+                    opt(ws),
                 ),
                 char(')'),
             )),

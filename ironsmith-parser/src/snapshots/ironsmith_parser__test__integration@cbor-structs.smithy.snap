@@ -253,7 +253,7 @@ Ast {
                                                             key: "documentation",
                                                             value: String(
                                                                 String(
-                                                                    "            The server should be capable of deserializing simple scalar properties\n            encoded using a map with a definite length. The server should also be able to parse\n            a key encoded using an indefinite length string.",
+                                                                    "The server should be capable of deserializing simple scalar properties\n            encoded using a map with a definite length. The server should also be able to parse\n            a key encoded using an indefinite length string.",
                                                                 ),
                                                             ),
                                                         },
@@ -1499,7 +1499,7 @@ Ast {
                                                             key: "documentation",
                                                             value: String(
                                                                 String(
-                                                                    "            The server should skip over additional fields that are not part of the structure. This allows a\n            client generated against a newer Smithy model to be able to communicate with a server that is\n            generated against an older Smithy model.",
+                                                                    "The server should skip over additional fields that are not part of the structure. This allows a\n            client generated against a newer Smithy model to be able to communicate with a server that is\n            generated against an older Smithy model.",
                                                                 ),
                                                             ),
                                                         },
@@ -2792,7 +2792,7 @@ Ast {
                                                             key: "documentation",
                                                             value: String(
                                                                 String(
-                                                                    "            The client should skip over additional fields that are not part of the structure. This allows a\n            client generated against an older Smithy model to be able to communicate with a server that is\n            generated against a newer Smithy model.",
+                                                                    "The client should skip over additional fields that are not part of the structure. This allows a\n            client generated against an older Smithy model to be able to communicate with a server that is\n            generated against a newer Smithy model.",
                                                                 ),
                                                             ),
                                                         },

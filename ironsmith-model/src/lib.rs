@@ -21,6 +21,7 @@ use ironsmith_parser::{
 };
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug)]
 pub enum Error<'a> {
     /// Invalid type for control field `{0}`, wanted value of type `{1}` but got `{2:?}`
     InvalidControlType(
@@ -55,7 +56,7 @@ impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
         let metadata = value
             .metadata
             .into_iter()
-            .map(|(k, v)| (k, v.into()))
+            .map(|(k, v)| (k, NodeValue::new(v, "", &[])))
             .collect();
 
         let Some(ast_shapes) = value.shapes else {
@@ -121,7 +122,7 @@ impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
                                             namespace: "smithy.api",
                                             shape: "enumValue",
                                         },
-                                        value.into(),
+                                        NodeValue::new(value, namespace, imports),
                                     );
                                 }
 
@@ -461,9 +462,11 @@ fn transform_traits<'a>(
                     resolve_type_name(v.shape_id, namespace, imports).target,
                     match v.body {
                         Some(TraitBody::Structure(v)) => NodeValue::Object(
-                            v.into_iter().map(|v| (v.key, v.value.into())).collect(),
+                            v.into_iter()
+                                .map(|v| (v.key, NodeValue::new(v.value, namespace, imports)))
+                                .collect(),
                         ),
-                        Some(TraitBody::Node(node)) => node.into(),
+                        Some(TraitBody::Node(node)) => NodeValue::new(node, namespace, imports),
                         None => NodeValue::Object(BTreeMap::new()),
                     },
                 )
@@ -558,15 +561,26 @@ pub enum NodeValue<'a> {
     Bool(bool),
     Null,
     String(&'a str),
+    Type(Reference<'a>),
 }
 
-impl<'a> From<AstNodeValue<'a>> for NodeValue<'a> {
-    fn from(value: AstNodeValue<'a>) -> Self {
+impl<'a> NodeValue<'a> {
+    fn new(
+        value: AstNodeValue<'a>,
+        namespace: &'a str,
+        imports: &[AbsoluteRootShapeId<'a>],
+    ) -> Self {
         match value {
-            AstNodeValue::Array(vec) => Self::Array(vec.into_iter().map(Into::into).collect()),
-            AstNodeValue::Object(vec) => {
-                Self::Object(vec.into_iter().map(|v| (v.key, v.value.into())).collect())
-            }
+            AstNodeValue::Array(vec) => Self::Array(
+                vec.into_iter()
+                    .map(|v| Self::new(v, namespace, imports))
+                    .collect(),
+            ),
+            AstNodeValue::Object(vec) => Self::Object(
+                vec.into_iter()
+                    .map(|v| (v.key, Self::new(v.value, namespace, imports)))
+                    .collect(),
+            ),
             AstNodeValue::Number(v) => NodeValue::Number(v),
             AstNodeValue::Keyword(ironsmith_parser::node_values::Keyword::True) => {
                 NodeValue::Bool(true)
@@ -576,7 +590,9 @@ impl<'a> From<AstNodeValue<'a>> for NodeValue<'a> {
             }
             AstNodeValue::Keyword(ironsmith_parser::node_values::Keyword::Null) => NodeValue::Null,
             AstNodeValue::String(StringNode::String(s)) => NodeValue::String(s),
-            AstNodeValue::String(StringNode::ShapeId(_)) => todo!(),
+            AstNodeValue::String(StringNode::ShapeId(v)) => {
+                NodeValue::Type(resolve_type_name(v, namespace, imports))
+            }
         }
     }
 }

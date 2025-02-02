@@ -1,0 +1,11 @@
+[package]
+name = "ironsmith-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ironsmith-parser = { path = "../ironsmith-parser" }
+ironsmith-model = { path = "../ironsmith-model" }
+clap = { version = "4", features = ["derive"] }
+serde_json = { version = "1" }
+

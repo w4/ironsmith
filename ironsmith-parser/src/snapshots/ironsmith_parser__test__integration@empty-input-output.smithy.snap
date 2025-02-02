@@ -267,7 +267,7 @@ Ast {
                                                             key: "documentation",
                                                             value: String(
                                                                 String(
-                                                                    "            Servers should accept an empty body if there is no input. Additionally,\n            they should not raise an error if the `Accept` header is set.",
+                                                                    "Servers should accept an empty body if there is no input. Additionally,\n            they should not raise an error if the `Accept` header is set.",
                                                                 ),
                                                             ),
                                                         },
@@ -547,7 +547,7 @@ Ast {
                                                             key: "documentation",
                                                             value: String(
                                                                 String(
-                                                                    "            Clients should accept an empty body if there is no output and\n            should not raise an error if the `Content-Type` header is set.",
+                                                                    "Clients should accept an empty body if there is no output and\n            should not raise an error if the `Content-Type` header is set.",
                                                                 ),
                                                             ),
                                                         },
@@ -886,7 +886,7 @@ Ast {
                                                             key: "documentation",
                                                             value: String(
                                                                 String(
-                                                                    "            When input structure, is empty the server should accept an empty body\n            even if the Accept header is set.",
+                                                                    "When input structure, is empty the server should accept an empty body\n            even if the Accept header is set.",
                                                                 ),
                                                             ),
                                                         },

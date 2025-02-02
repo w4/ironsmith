@@ -934,7 +934,7 @@ Ast {
                                                             key: "documentation",
                                                             value: String(
                                                                 String(
-                                                                    "            Clients SHOULD tolerate seeing a null value in a dense map, and they SHOULD\n            drop the null key-value pair.",
+                                                                    "Clients SHOULD tolerate seeing a null value in a dense map, and they SHOULD\n            drop the null key-value pair.",
                                                                 ),
                                                             ),
                                                         },
