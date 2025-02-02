@@ -158,12 +158,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "InvalidGreeting",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "InvalidGreeting",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {
@@ -366,12 +361,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "ComplexError",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "ComplexError",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {

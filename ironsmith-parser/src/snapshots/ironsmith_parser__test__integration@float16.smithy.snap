@@ -76,12 +76,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "Float16",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "Float16",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {

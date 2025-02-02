@@ -49,7 +49,7 @@ impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
         let smithy = match value.control.into_iter().find(|(k, _)| *k == "version") {
             Some((_, AstNodeValue::String(StringNode::String(version)))) => version,
             Some((_, v)) => return Err(Error::InvalidControlType("version", "string", v)),
-            None => "1.0",
+            None => "2.0",
         };
 
         let metadata = value
@@ -58,7 +58,7 @@ impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
             .map(|(k, v)| (k, v.into()))
             .collect();
 
-        let Some(shapes) = value.shapes else {
+        let Some(ast_shapes) = value.shapes else {
             return Ok(SemanticModel {
                 smithy,
                 metadata,
@@ -66,421 +66,349 @@ impl<'a> TryFrom<ironsmith_parser::Ast<'a>> for SemanticModel<'a> {
             });
         };
 
-        let imports = shapes.uses.as_slice();
-        let namespace = shapes.namespace;
+        let imports = ast_shapes.uses.as_slice();
+        let namespace = ast_shapes.namespace;
 
-        let shapes = shapes
-            .shapes
-            .into_iter()
-            .map(|v| {
-                let shape = match v {
-                    ShapeOrApply::Shape(shape) => shape,
-                    ShapeOrApply::Apply(apply) => {
-                        return Ok((
-                            apply.shape_id,
-                            OuterShape {
-                                traits: transform_traits(apply.traits, namespace, imports),
-                                mixins: vec![],
-                                inner: Shape::Apply,
-                            },
-                        ));
-                    }
-                };
+        let mut shapes = BTreeMap::new();
 
-                let traits = transform_traits(shape.traits, namespace, imports);
+        for shape in ast_shapes.shapes {
+            let shape = match shape {
+                ShapeOrApply::Shape(shape) => shape,
+                ShapeOrApply::Apply(apply) => {
+                    // TODO: this also needs to try and merge if `shape_id` exists in the output map already
+                    shapes.insert(
+                        apply.shape_id,
+                        OuterShape {
+                            traits: transform_traits(apply.traits, namespace, imports),
+                            mixins: vec![],
+                            inner: Shape::Apply,
+                        },
+                    );
+                    continue;
+                }
+            };
 
-                let (identifier, mixins, shape) = match shape.shape {
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::String,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::String),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Blob,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Blob),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Boolean,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Boolean),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Document,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Document),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Byte,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Byte),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Short,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Short),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Integer,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Integer),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Long,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Long),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Float,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Float),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Double,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Double),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::BigInteger,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::BigInteger),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::BigDecimal,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::BigDecimal),
-                    AstShape::Simple(SimpleShape {
-                        type_name: SimpleTypeName::Timestamp,
-                        identifier,
-                        mixins,
-                    }) => (identifier, mixins, Shape::Timestamp),
-                    AstShape::Enum(AstEnumShape {
-                        type_name,
-                        identifier,
-                        mixins,
-                        members,
-                    }) => {
-                        let shape = AggregateShape {
-                            members: members
-                                .into_iter()
-                                .map(|v| {
-                                    let mut traits = transform_traits(v.traits, namespace, imports);
+            let mixins = shape
+                .shape
+                .mixins()
+                .iter()
+                .copied()
+                .map(|v| resolve_type_name(v, namespace, imports))
+                .collect();
+            let traits = transform_traits(shape.traits, namespace, imports);
 
-                                    if let Some(value) = v.value {
-                                        traits.0.insert(
-                                            ShapeId {
-                                                namespace: "smithy.api",
-                                                shape: "enumValue",
-                                            },
-                                            value.into(),
-                                        );
-                                    }
+            let (identifier, shape) = match shape.shape {
+                AstShape::Simple(SimpleShape {
+                    type_name,
+                    identifier,
+                    ..
+                }) => (identifier, type_name.into()),
+                AstShape::Enum(AstEnumShape {
+                    type_name,
+                    identifier,
+                    members,
+                    ..
+                }) => {
+                    let shape = AggregateShape {
+                        members: members
+                            .into_iter()
+                            .map(|v| {
+                                let mut traits = transform_traits(v.traits, namespace, imports);
 
-                                    let reference = ReferenceWithTraits {
-                                        inner: Reference {
-                                            target: ShapeId {
-                                                namespace: "smithy.api",
-                                                shape: "Unit",
-                                            },
+                                if let Some(value) = v.value {
+                                    traits.0.insert(
+                                        ShapeId {
+                                            namespace: "smithy.api",
+                                            shape: "enumValue",
                                         },
-                                        traits,
-                                    };
+                                        value.into(),
+                                    );
+                                }
 
-                                    (v.identifier, reference)
-                                })
-                                .collect(),
-                        };
+                                let reference = ReferenceWithTraits {
+                                    inner: Reference {
+                                        target: ShapeId {
+                                            namespace: "smithy.api",
+                                            shape: "Unit",
+                                        },
+                                    },
+                                    traits,
+                                };
 
-                        let shape = match type_name {
-                            EnumTypeName::IntEnum => Shape::IntEnum(shape),
-                            EnumTypeName::Enum => Shape::Enum(shape),
-                        };
+                                (v.identifier, reference)
+                            })
+                            .collect(),
+                    };
 
-                        (identifier, mixins, shape)
+                    let shape = match type_name {
+                        EnumTypeName::IntEnum => Shape::IntEnum(shape),
+                        EnumTypeName::Enum => Shape::Enum(shape),
+                    };
+
+                    (identifier, shape)
+                }
+                AstShape::Aggregate(AstAggregateShape {
+                    type_name: AggregateTypeName::Map,
+                    identifier,
+                    mut members,
+                    ..
+                }) => {
+                    let key = members
+                        .iter()
+                        .position(|v| v.identifier == "key")
+                        .ok_or(Error::MapMissingKey)?;
+                    let key = members.swap_remove(key);
+
+                    let value = members
+                        .iter()
+                        .position(|v| v.identifier == "value")
+                        .ok_or(Error::MapMissingValue)?;
+                    let value = members.swap_remove(value);
+
+                    if !members.is_empty() {
+                        return Err(Error::MapInvalidMember);
                     }
-                    AstShape::Aggregate(AstAggregateShape {
-                        type_name: AggregateTypeName::Map,
-                        identifier,
-                        for_resource: _for_resource, // TODO
-                        mixins,
-                        mut members,
-                    }) => {
-                        let key = members
-                            .iter()
-                            .position(|v| v.identifier == "key")
-                            .ok_or(Error::MapMissingKey)?;
-                        let key = members.swap_remove(key);
 
-                        let value = members
-                            .iter()
-                            .position(|v| v.identifier == "value")
-                            .ok_or(Error::MapMissingValue)?;
-                        let value = members.swap_remove(value);
+                    let shape = MapShape {
+                        key: ReferenceWithTraits {
+                            inner: resolve_type_name(key.shape_id.unwrap(), namespace, imports),
+                            traits: transform_traits(key.traits, namespace, imports),
+                        },
+                        value: ReferenceWithTraits {
+                            inner: resolve_type_name(value.shape_id.unwrap(), namespace, imports), // TODO
+                            traits: transform_traits(value.traits, namespace, imports),
+                        },
+                    };
 
-                        if !members.is_empty() {
-                            return Err(Error::MapInvalidMember);
-                        }
+                    (identifier, Shape::Map(shape))
+                }
+                AstShape::Aggregate(AstAggregateShape {
+                    type_name: AggregateTypeName::List,
+                    identifier,
+                    mut members,
+                    ..
+                }) => {
+                    let member = members
+                        .iter()
+                        .position(|v| v.identifier == "member")
+                        .ok_or(Error::MapMissingKey)?;
+                    let member = members.swap_remove(member);
 
-                        let shape = MapShape {
-                            key: ReferenceWithTraits {
-                                inner: expand_type_name(key.shape_id.unwrap(), namespace, imports),
-                                traits: transform_traits(key.traits, namespace, imports),
-                            },
-                            value: ReferenceWithTraits {
-                                inner: expand_type_name(
-                                    value.shape_id.unwrap(),
-                                    namespace,
-                                    imports,
-                                ), // TODO
-                                traits: transform_traits(value.traits, namespace, imports),
-                            },
-                        };
-
-                        (identifier, mixins, Shape::Map(shape))
+                    if !members.is_empty() {
+                        return Err(Error::MapInvalidMember);
                     }
-                    AstShape::Aggregate(AstAggregateShape {
-                        type_name: AggregateTypeName::List,
-                        identifier,
-                        for_resource: _for_resource, // TODO
-                        mixins,
-                        mut members,
-                    }) => {
-                        let member = members
+
+                    let shape = ListShape {
+                        member: ReferenceWithTraits {
+                            inner: resolve_type_name(member.shape_id.unwrap(), namespace, imports),
+                            traits: transform_traits(member.traits.clone(), namespace, imports),
+                        },
+                    };
+
+                    (identifier, Shape::List(shape))
+                }
+                AstShape::Aggregate(AstAggregateShape {
+                    type_name: type_name @ (AggregateTypeName::Structure | AggregateTypeName::Union),
+                    identifier,
+                    members,
+                    ..
+                }) => {
+                    let shape = AggregateShape {
+                        members: members
+                            .into_iter()
+                            .map(|v| {
+                                let reference = ReferenceWithTraits {
+                                    inner: resolve_type_name(
+                                        v.shape_id.unwrap(),
+                                        namespace,
+                                        imports,
+                                    ), // TODO
+                                    traits: transform_traits(v.traits, namespace, imports),
+                                };
+
+                                (v.identifier, reference)
+                            })
+                            .collect(),
+                    };
+
+                    let shape = match type_name {
+                        AggregateTypeName::Structure => Shape::Structure(shape),
+                        AggregateTypeName::Union => Shape::Union(shape),
+                        AggregateTypeName::Map | AggregateTypeName::List => unreachable!(),
+                    };
+
+                    (identifier, shape)
+                }
+                AstShape::Entity(EntityShape {
+                    type_name: EntityTypeName::Service,
+                    identifier,
+                    mut nodes,
+                    ..
+                }) => {
+                    let mut take = |key| {
+                        nodes
                             .iter()
-                            .position(|v| v.identifier == "member")
-                            .ok_or(Error::MapMissingKey)?;
-                        let member = members.swap_remove(member);
-
-                        if !members.is_empty() {
-                            return Err(Error::MapInvalidMember);
-                        }
-
-                        let shape = ListShape {
-                            member: ReferenceWithTraits {
-                                inner: expand_type_name(
-                                    member.shape_id.unwrap(),
-                                    namespace,
-                                    imports,
-                                ),
-                                traits: transform_traits(member.traits.clone(), namespace, imports),
-                            },
-                        };
-
-                        (identifier, mixins, Shape::List(shape))
-                    }
-                    AstShape::Aggregate(AstAggregateShape {
-                        type_name:
-                            type_name @ (AggregateTypeName::Structure | AggregateTypeName::Union),
-                        identifier,
-                        for_resource: _for_resource, // TODO
-                        mixins,
-                        members,
-                    }) => {
-                        let shape = AggregateShape {
-                            members: members
-                                .into_iter()
-                                .map(|v| {
-                                    let reference = ReferenceWithTraits {
-                                        inner: expand_type_name(
-                                            v.shape_id.unwrap(),
-                                            namespace,
-                                            imports,
-                                        ), // TODO
-                                        traits: transform_traits(v.traits, namespace, imports),
-                                    };
-
-                                    (v.identifier, reference)
-                                })
-                                .collect(),
-                        };
-
-                        let shape = match type_name {
-                            AggregateTypeName::Structure => Shape::Structure(shape),
-                            AggregateTypeName::Union => Shape::Union(shape),
-                            AggregateTypeName::Map | AggregateTypeName::List => unreachable!(),
-                        };
-
-                        (identifier, mixins, shape)
-                    }
-                    AstShape::Entity(EntityShape {
-                        type_name: EntityTypeName::Service,
-                        identifier,
-                        mixins,
-                        mut nodes,
-                    }) => {
-                        let mut take = |key| {
-                            nodes
-                                .iter()
-                                .position(|v| v.key == key)
-                                .map(|index| nodes.swap_remove(index))
-                                .map(|kv| unpack_node_value_to_shapes(kv.value, namespace, imports))
-                                .transpose()
-                        };
-
-                        let operations = take("operations")?.unwrap_or_default();
-                        let resources = take("resources")?.unwrap_or_default();
-                        let errors = take("errors")?.unwrap_or_default();
-                        let rename = nodes
-                            .iter()
-                            .position(|v| v.key == "rename")
+                            .position(|v| v.key == key)
                             .map(|index| nodes.swap_remove(index))
-                            .map(|kv| match kv.value {
-                                AstNodeValue::Object(v) => v
+                            .map(|kv| unpack_node_value_to_shapes(kv.value, namespace, imports))
+                            .transpose()
+                    };
+
+                    let operations = take("operations")?.unwrap_or_default();
+                    let resources = take("resources")?.unwrap_or_default();
+                    let errors = take("errors")?.unwrap_or_default();
+                    let rename = nodes
+                        .iter()
+                        .position(|v| v.key == "rename")
+                        .map(|index| nodes.swap_remove(index))
+                        .map(|kv| match kv.value {
+                            AstNodeValue::Object(v) => v
+                                .into_iter()
+                                .map(|rename| {
+                                    let key = ShapeId::try_from(rename.key)?;
+                                    let value = match rename.value {
+                                        AstNodeValue::String(StringNode::String(s)) => s,
+                                        _ => return Err(Error::InvalidType),
+                                    };
+                                    Ok((key, value))
+                                })
+                                .collect(),
+                            _ => Err(Error::InvalidType),
+                        })
+                        .transpose()?
+                        .unwrap_or_default();
+
+                    let shape = ServiceShape {
+                        operations,
+                        resources,
+                        errors,
+                        rename,
+                    };
+
+                    (identifier, Shape::Service(shape))
+                }
+                AstShape::Entity(EntityShape {
+                    type_name: EntityTypeName::Resource,
+                    identifier,
+                    mut nodes,
+                    ..
+                }) => {
+                    let mut take_map = |key| {
+                        nodes
+                            .iter()
+                            .position(|v| v.key == key)
+                            .map(|index| nodes.swap_remove(index))
+                            .map(|v| match v.value {
+                                AstNodeValue::Object(obj) => obj
                                     .into_iter()
-                                    .map(|rename| {
-                                        let key = ShapeId::try_from(rename.key)?;
-                                        let value = match rename.value {
-                                            AstNodeValue::String(StringNode::String(s)) => s,
-                                            _ => return Err(Error::InvalidType),
-                                        };
-                                        Ok((key, value))
+                                    .map(|v| {
+                                        let value = unpack_node_value_to_shape(
+                                            v.value, namespace, imports,
+                                        )?
+                                        .inner;
+                                        Ok((v.key, value))
                                     })
                                     .collect(),
                                 _ => Err(Error::InvalidType),
                             })
-                            .transpose()?
-                            .unwrap_or_default();
+                            .transpose()
+                    };
 
-                        let shape = ServiceShape {
-                            operations,
-                            resources,
-                            errors,
-                            rename,
-                        };
+                    let identifiers = take_map("identifiers")?.unwrap_or_default();
+                    let properties = take_map("properties")?.unwrap_or_default();
 
-                        (identifier, mixins, Shape::Service(shape))
-                    }
-                    AstShape::Entity(EntityShape {
-                        type_name: EntityTypeName::Resource,
-                        identifier,
-                        mixins,
-                        mut nodes,
-                    }) => {
-                        let mut take_map = |key| {
-                            nodes
-                                .iter()
-                                .position(|v| v.key == key)
-                                .map(|index| nodes.swap_remove(index))
-                                .map(|v| match v.value {
-                                    AstNodeValue::Object(obj) => obj
-                                        .into_iter()
-                                        .map(|v| {
-                                            let value = unpack_node_value_to_shape(
-                                                v.value, namespace, imports,
-                                            )?
-                                            .inner;
-                                            Ok((v.key, value))
-                                        })
-                                        .collect(),
-                                    _ => Err(Error::InvalidType),
-                                })
-                                .transpose()
-                        };
+                    let mut take_one = |key| {
+                        nodes
+                            .iter()
+                            .position(|v| v.key == key)
+                            .map(|index| nodes.swap_remove(index))
+                            .map(|kv| {
+                                unpack_node_value_to_shape(kv.value, namespace, imports)
+                                    .map(|v| v.inner)
+                            })
+                            .transpose()
+                    };
 
-                        let identifiers = take_map("identifiers")?.unwrap_or_default();
-                        let properties = take_map("properties")?.unwrap_or_default();
+                    let create = take_one("create")?;
+                    let put = take_one("put")?;
+                    let read = take_one("read")?;
+                    let update = take_one("update")?;
+                    let delete = take_one("delete")?;
+                    let list = take_one("list")?;
 
-                        let mut take_one = |key| {
-                            nodes
-                                .iter()
-                                .position(|v| v.key == key)
-                                .map(|index| nodes.swap_remove(index))
-                                .map(|kv| {
-                                    unpack_node_value_to_shape(kv.value, namespace, imports)
-                                        .map(|v| v.inner)
-                                })
-                                .transpose()
-                        };
+                    let mut take_many = |key| {
+                        nodes
+                            .iter()
+                            .position(|v| v.key == key)
+                            .map(|index| nodes.swap_remove(index))
+                            .map(|kv| unpack_node_value_to_shapes(kv.value, namespace, imports))
+                            .transpose()
+                    };
 
-                        let create = take_one("create")?;
-                        let put = take_one("put")?;
-                        let read = take_one("read")?;
-                        let update = take_one("update")?;
-                        let delete = take_one("delete")?;
-                        let list = take_one("list")?;
+                    let operations = take_many("operations")?.unwrap_or_default();
+                    let collection_operations =
+                        take_many("collectionOperations")?.unwrap_or_default();
+                    let resources = take_many("resources")?.unwrap_or_default();
 
-                        let mut take_many = |key| {
-                            nodes
-                                .iter()
-                                .position(|v| v.key == key)
-                                .map(|index| nodes.swap_remove(index))
-                                .map(|kv| unpack_node_value_to_shapes(kv.value, namespace, imports))
-                                .transpose()
-                        };
+                    let shape = ResourceShape {
+                        identifiers,
+                        properties,
+                        create,
+                        put,
+                        read,
+                        update,
+                        delete,
+                        list,
+                        operations,
+                        collection_operations,
+                        resources,
+                    };
 
-                        let operations = take_many("operations")?.unwrap_or_default();
-                        let collection_operations =
-                            take_many("collectionOperations")?.unwrap_or_default();
-                        let resources = take_many("resources")?.unwrap_or_default();
+                    (identifier, Shape::Resource(shape))
+                }
+                AstShape::Operation(AstOperationShape {
+                    identifier, body, ..
+                }) => {
+                    let mut shape = OperationShape::default();
 
-                        let shape = ResourceShape {
-                            identifiers,
-                            properties,
-                            create,
-                            put,
-                            read,
-                            update,
-                            delete,
-                            list,
-                            operations,
-                            collection_operations,
-                            resources,
-                        };
-
-                        (identifier, mixins, Shape::Resource(shape))
-                    }
-                    AstShape::Operation(AstOperationShape {
-                        identifier,
-                        mixins,
-                        body,
-                    }) => {
-                        let mut shape = OperationShape::default();
-
-                        for val in body {
-                            match val {
-                                OperationProperty::Input(OperationPropertyShape::Explicit(
-                                    type_name,
-                                )) => {
-                                    shape.input =
-                                        Some(expand_type_name(type_name, namespace, imports));
-                                }
-                                OperationProperty::Output(OperationPropertyShape::Explicit(
-                                    type_name,
-                                )) => {
-                                    shape.output =
-                                        Some(expand_type_name(type_name, namespace, imports));
-                                }
-                                OperationProperty::Errors(errors) => {
-                                    shape.errors = errors
-                                        .into_iter()
-                                        .map(|type_name| {
-                                            expand_type_name(type_name, namespace, imports)
-                                        })
-                                        .collect();
-                                }
-                                _ => todo!(),
+                    for val in body {
+                        match val {
+                            OperationProperty::Input(OperationPropertyShape::Explicit(
+                                type_name,
+                            )) => {
+                                shape.input =
+                                    Some(resolve_type_name(type_name, namespace, imports));
                             }
+                            OperationProperty::Output(OperationPropertyShape::Explicit(
+                                type_name,
+                            )) => {
+                                shape.output =
+                                    Some(resolve_type_name(type_name, namespace, imports));
+                            }
+                            OperationProperty::Errors(errors) => {
+                                shape.errors = errors
+                                    .into_iter()
+                                    .map(|type_name| {
+                                        resolve_type_name(type_name, namespace, imports)
+                                    })
+                                    .collect();
+                            }
+                            _ => todo!(),
                         }
-
-                        (identifier, mixins, Shape::Operation(shape))
                     }
-                };
 
-                let mixins = mixins
-                    .into_iter()
-                    .map(|v| expand_type_name(v, namespace, imports))
-                    .collect();
+                    (identifier, Shape::Operation(shape))
+                }
+            };
 
-                let shape = OuterShape {
-                    traits,
-                    mixins,
-                    inner: shape,
-                };
+            let shape = OuterShape {
+                traits,
+                mixins,
+                inner: shape,
+            };
 
-                Ok((identifier, shape))
-            })
-            .collect::<Result<_, _>>()?;
+            shapes.insert(identifier, shape);
+        }
 
         Ok(Self {
             smithy,
@@ -497,7 +425,7 @@ fn unpack_node_value_to_shape<'a>(
 ) -> Result<ReferenceWithTraits<'a>, Error<'a>> {
     match node_value {
         AstNodeValue::String(StringNode::ShapeId(type_name)) => Ok(ReferenceWithTraits {
-            inner: expand_type_name(type_name, namespace, imports),
+            inner: resolve_type_name(type_name, namespace, imports),
             traits: Traits(BTreeMap::new()),
         }),
         _ => Err(Error::InvalidType),
@@ -530,7 +458,7 @@ fn transform_traits<'a>(
             .into_iter()
             .map(|v| {
                 (
-                    expand_type_name(v.shape_id, namespace, imports).target,
+                    resolve_type_name(v.shape_id, namespace, imports).target,
                     match v.body {
                         Some(TraitBody::Structure(v)) => NodeValue::Object(
                             v.into_iter().map(|v| (v.key, v.value.into())).collect(),
@@ -588,7 +516,7 @@ impl<'a, 'de: 'a> Deserialize<'de> for ShapeId<'a> {
     }
 }
 
-fn expand_type_name<'a>(
+fn resolve_type_name<'a>(
     type_name: ironsmith_parser::shape_id::ShapeId<'a>,
     namespace: &'a str,
     imports: &[AbsoluteRootShapeId<'a>],
@@ -693,6 +621,26 @@ pub enum Shape<'a> {
     Apply,
 }
 
+impl From<SimpleTypeName> for Shape<'_> {
+    fn from(value: SimpleTypeName) -> Self {
+        match value {
+            SimpleTypeName::Blob => Self::Blob,
+            SimpleTypeName::Boolean => Self::Boolean,
+            SimpleTypeName::Document => Self::Document,
+            SimpleTypeName::String => Self::String,
+            SimpleTypeName::Byte => Self::Byte,
+            SimpleTypeName::Short => Self::Short,
+            SimpleTypeName::Integer => Self::Integer,
+            SimpleTypeName::Long => Self::Long,
+            SimpleTypeName::Float => Self::Float,
+            SimpleTypeName::Double => Self::Double,
+            SimpleTypeName::BigInteger => Self::BigInteger,
+            SimpleTypeName::BigDecimal => Self::BigDecimal,
+            SimpleTypeName::Timestamp => Self::Timestamp,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct ListShape<'a> {
     #[serde(borrow)]
@@ -744,7 +692,7 @@ pub struct ReferenceWithTraits<'a> {
     pub traits: Traits<'a>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Reference<'a> {
     #[serde(borrow)]
     pub target: ShapeId<'a>,

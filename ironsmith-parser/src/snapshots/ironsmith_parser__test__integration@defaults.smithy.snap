@@ -39,12 +39,7 @@ Ast {
             shapes: [
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "OperationWithDefaults",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "OperationWithDefaults",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {
@@ -1241,12 +1236,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "OperationWithDefaults",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "OperationWithDefaults",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {

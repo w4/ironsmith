@@ -98,12 +98,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "RpcV2CborDenseMaps",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "RpcV2CborDenseMaps",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {
@@ -564,12 +559,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "RpcV2CborDenseMaps",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "RpcV2CborDenseMaps",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {
@@ -1348,12 +1338,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "RpcV2CborSparseMaps",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "RpcV2CborSparseMaps",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {
@@ -2132,12 +2117,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "RpcV2CborSparseMaps",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "RpcV2CborSparseMaps",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {

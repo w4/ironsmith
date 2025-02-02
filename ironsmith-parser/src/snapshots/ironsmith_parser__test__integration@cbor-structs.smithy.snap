@@ -2960,12 +2960,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "RecursiveShapes",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "RecursiveShapes",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {
@@ -3163,12 +3158,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "RecursiveShapes",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "RecursiveShapes",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {

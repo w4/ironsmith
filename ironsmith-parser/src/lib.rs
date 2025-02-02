@@ -567,6 +567,27 @@ pub mod shapes {
         Operation(OperationShape<'a>),
     }
 
+    impl<'a> Shape<'a> {
+        #[must_use]
+        pub fn mixins(&self) -> &[ShapeId<'a>] {
+            match self {
+                Shape::Simple(shape) => &shape.mixins,
+                Shape::Enum(shape) => &shape.mixins,
+                Shape::Aggregate(shape) => &shape.mixins,
+                Shape::Entity(shape) => &shape.mixins,
+                Shape::Operation(shape) => &shape.mixins,
+            }
+        }
+
+        #[must_use]
+        pub fn resource_bound(&self) -> Option<ShapeId<'a>> {
+            match self {
+                Shape::Aggregate(shape) => shape.for_resource,
+                _ => None,
+            }
+        }
+    }
+
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct SimpleShape<'a> {
         pub type_name: SimpleTypeName,
@@ -1689,10 +1710,7 @@ enum Suit {
                     namespace: "com.foo",
                     uses: vec![],
                     shapes: vec![ShapeOrApply::Apply(crate::traits::ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: RootShapeId::Relative("MyString"),
-                            shape_id_member: None,
-                        },
+                        shape_id: "MyString",
                         traits: vec![Trait {
                             shape_id: ShapeId {
                                 root_shape_id: RootShapeId::Relative("documentation"),
@@ -1721,10 +1739,7 @@ enum Suit {
                     namespace: "com.foo",
                     uses: vec![],
                     shapes: vec![ShapeOrApply::Apply(crate::traits::ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: RootShapeId::Relative("MyString"),
-                            shape_id_member: None,
-                        },
+                        shape_id: "MyString",
                         traits: vec![
                             Trait {
                                 shape_id: ShapeId {

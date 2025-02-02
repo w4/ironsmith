@@ -80,12 +80,7 @@ Ast {
                 ),
                 Apply(
                     ApplyStatement {
-                        shape_id: ShapeId {
-                            root_shape_id: Relative(
-                                "FractionalSeconds",
-                            ),
-                            shape_id_member: None,
-                        },
+                        shape_id: "FractionalSeconds",
                         traits: [
                             Trait {
                                 shape_id: ShapeId {
